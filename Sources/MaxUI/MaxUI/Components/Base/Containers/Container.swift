@@ -190,7 +190,13 @@ public protocol DeclaratableContainerViewAppearance: ViewableViewModelProtocol {
     @discardableResult
     func backgroundColor(_ backgroundColor: UIColor) -> ViewableViewModelProtocol
     @discardableResult
-    func shadow(_ shadow: SharedAppearance.Layer.Shadow) -> ViewableViewModelProtocol
+    func shadow(
+        offsetX: CGFloat?,
+        offsetY: CGFloat?,
+        color: UIColor?,
+        opacity: Float?,
+        radius: CGFloat?
+    ) -> ViewableViewModelProtocol
     @discardableResult
     func clipsToBounds(_ clipsToBounds: Bool) -> ViewableViewModelProtocol
     @discardableResult

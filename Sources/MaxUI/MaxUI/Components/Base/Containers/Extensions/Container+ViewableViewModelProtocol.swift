@@ -9,8 +9,23 @@ public extension ViewableViewModelProtocol {
         StackView.Model(models: [self], appearance: .init(axis: axis, alignment: .center))
     }
     
-    func gradient(_ appearance: GradientView.Appearance) -> Gradient {
-        Gradient { self }.style(appearance)
+    func gradient(
+        layer: SharedAppearance.Layer = .init(),
+        colors: [UIColor] = [],
+        locations: [NSNumber] = [0, 1],
+        startPoint: CGPoint = CGPoint(x: 0, y: 0),
+        endPoint: CGPoint = CGPoint(x: 1, y: 1),
+        type: CAGradientLayerType = .axial
+    ) -> Gradient {
+        let appearance = Gradient.Appearance(
+            layer: layer,
+            colors: colors,
+            locations: locations,
+            startPoint: startPoint,
+            endPoint: endPoint,
+            type: type
+        )
+        return Gradient { self }.style(appearance)
     }
     
     func toTapableContainer(
@@ -164,8 +179,21 @@ extension ViewableViewModelProtocol {
     }
     
     @discardableResult
-    public func shadow(_ shadow: SharedAppearance.Layer.Shadow) -> ViewableViewModelProtocol {
-        updateContainer(\.layer.shadow, setTo: shadow)
+    public func shadow(
+        offsetX: CGFloat? = nil,
+        offsetY: CGFloat? = nil,
+        color: UIColor? = nil,
+        opacity: Float? = nil,
+        radius: CGFloat? = nil
+    ) -> ViewableViewModelProtocol {
+        let shadowApperance = SharedAppearance.Layer.Shadow(
+            offsetX: offsetX,
+            offsetY: offsetY,
+            color: color,
+            opacity: opacity,
+            radius: radius
+        )
+        return updateContainer(\.layer.shadow, setTo: shadowApperance)
     }
     
     @discardableResult

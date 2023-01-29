@@ -31,6 +31,10 @@ public struct Text: ComponentViewModelProtocol, DeclaratableTextAppearance {
     public init(_ attributedText: NSAttributedString?) {
         self._attributedText = .dynamic(attributedText)
     }
+    
+    public init(@TextAttibutedBuilder _ builder: () -> NSAttributedString) {
+        self._attributedText = .dynamic(builder())
+    }
 }
 
 public final class TextView: UILabel {

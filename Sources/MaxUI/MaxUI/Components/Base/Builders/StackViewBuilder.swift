@@ -40,6 +40,10 @@ public enum StackViewBuilder {
     public static func buildFinalResult(_ component: Component) -> Component {
         component
     }
+    
+    public static func buildExpression(_ expression: Expression?) -> Component {
+         [expression].compactMap { $0 }
+     }
 }
 
 @resultBuilder
@@ -75,5 +79,17 @@ public enum StackZBuilder {
     /// Builds a partial result from an expression. You can implement this method to perform preprocessing—for example, converting expressions to an internal type—or to provide additional information for type inference at use sites.
     public static func buildExpression(_ expression: Expression) -> Component {
         [expression]
+    }
+    
+    public static func buildExpression(_ expression: Expression?) -> Component {
+        [expression].compactMap { $0 }
+    }
+    
+    public static func buildExpression(_ expression: [Expression]) -> Component {
+        expression
+    }
+    
+    public static func buildFinalResult(_ component: Component) -> Component {
+        component
     }
 }

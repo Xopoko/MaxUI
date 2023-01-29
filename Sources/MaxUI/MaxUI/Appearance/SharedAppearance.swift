@@ -50,18 +50,18 @@ public enum SharedAppearance: Equatable, Withable {
     
     public struct Layer: Equatable, Withable {
         public struct Shadow: Equatable {
-            public let offsetX: CGFloat
-            public let offsetY: CGFloat
-            public let color: UIColor
-            public let opacity: Float
-            public let radius: CGFloat
+            public let offsetX: CGFloat?
+            public let offsetY: CGFloat?
+            public let color: UIColor?
+            public let opacity: Float?
+            public let radius: CGFloat?
             
             public init(
-                offsetX: CGFloat = 0,
-                offsetY: CGFloat = 4,
-                color: UIColor = .black,
-                opacity: Float = 0.1,
-                radius: CGFloat = 5
+                offsetX: CGFloat? = nil,
+                offsetY: CGFloat? = nil,
+                color: UIColor? = nil,
+                opacity: Float? = nil,
+                radius: CGFloat? = nil
             ) {
                 self.offsetX = offsetX
                 self.offsetY = offsetY
@@ -197,11 +197,20 @@ extension UIView {
             self.layer.masksToBounds = masksToBounds
         }
         
-        if let shadow = layer.shadow {
-            self.layer.shadowRadius = shadow.radius
-            self.layer.shadowColor = shadow.color.cgColor
-            self.layer.shadowOpacity = shadow.opacity
-            self.layer.shadowOffset = CGSize(width: shadow.offsetX, height: shadow.offsetY)
+        if let radius = layer.shadow?.radius {
+            self.layer.shadowRadius = radius
+        }
+        if let color = layer.shadow?.color?.cgColor {
+            self.layer.shadowColor = color
+        }
+        if let opacity = layer.shadow?.opacity {
+            self.layer.shadowOpacity = opacity
+        }
+        if layer.shadow?.offsetX != nil || layer.shadow?.offsetY != nil {
+            self.layer.shadowOffset = CGSize(
+                width: layer.shadow?.offsetX ?? .zero,
+                height: layer.shadow?.offsetY ?? .zero
+            )
         }
     }
     

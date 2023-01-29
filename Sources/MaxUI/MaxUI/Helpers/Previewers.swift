@@ -1,9 +1,22 @@
 import SwiftUI
 
-public struct UIViewPreview<View: UIView>: UIViewRepresentable {
-    public let view: View
+public struct UIViewControllerPreview: UIViewControllerRepresentable {
+    public let viewController: UIViewController
+
+    public init(_ builder: @escaping () -> UIViewController) {
+        viewController = builder()
+    }
     
-    public init(_ builder: @escaping () -> View) {
+    // MARK: UIViewControllerRepresentable
+    public func makeUIViewController(context: Context) -> UIViewController { viewController }
+   
+    public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+}
+
+public struct UIViewPreview: UIViewRepresentable {
+    public let view: UIView
+    
+    public init(_ builder: @escaping () -> UIView) {
         view = builder()
     }
     
@@ -13,15 +26,18 @@ public struct UIViewPreview<View: UIView>: UIViewRepresentable {
     public func updateUIView(_ view: UIView, context: Context) {}
 }
 
-public struct ComponentPreview<View: ViewableViewModelProtocol>: UIViewRepresentable {
+public struct ComponentPreview: UIViewRepresentable {
     public enum Distribution {
         case fill, center, top
     }
     
-    public let view: View
+    public let view: ViewableViewModelProtocol
     private let distribution: Distribution
     
-    public init(distribution: Distribution = .center, _ builder: @escaping () -> View) {
+    public init(
+        distribution: Distribution = .center,
+        _ builder: @escaping () -> ViewableViewModelProtocol
+    ) {
         view = builder()
         self.distribution = distribution
     }
