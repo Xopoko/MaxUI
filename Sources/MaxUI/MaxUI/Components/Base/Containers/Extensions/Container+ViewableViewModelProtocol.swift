@@ -1,14 +1,39 @@
 import UIKit
 
 public extension ViewableViewModelProtocol {
+    /// Converts a `ViewableViewModelProtocol` instance to a `Container`
+    ///
+    /// - Returns:
+    ///     The `Container` representation of the `ViewableViewModelProtocol` instance
     func toContainer() -> Container {
         Container { self }
     }
     
+    
+    /// Centers the `ViewableViewModelProtocol` instance within a `StackView`
+    ///
+    /// - Parameters:
+    ///     - axis: The axis of the `StackView` along which the models are arranged.
+    ///         Default value is `.vertical`.
+    ///
+    /// - Returns:
+    ///     The `StackView.Model` representation of the centered `ViewableViewModelProtocol` instance
     func toCenter(axis: NSLayoutConstraint.Axis = .vertical) -> StackView.Model {
         StackView.Model(models: [self], appearance: .init(axis: axis, alignment: .center))
     }
     
+    /// Applies gradient to a `ViewableViewModelProtocol` instance
+    ///
+    /// - Parameters:
+    ///     - layer: The shared appearance of the `Gradient` layer.
+    ///     - colors: An array of `UIColor` instances that define the gradient.
+    ///     - locations: An array of `NSNumber` instances that represent the location of each color stop in the gradient.
+    ///     - startPoint: The start point of the gradient, defined as a `CGPoint` value.
+    ///     - endPoint: The end point of the gradient, defined as a `CGPoint` value.
+    ///     - type: The type of gradient to be applied, specified as a `CAGradientLayerType`.
+    ///
+    /// - Returns:
+    ///     The `Gradient` representation of the `ViewableViewModelProtocol` instance with gradient applied
     func gradient(
         layer: SharedAppearance.Layer = .init(),
         colors: [UIColor] = [],
@@ -28,6 +53,14 @@ public extension ViewableViewModelProtocol {
         return Gradient { self }.style(appearance)
     }
     
+    /// Converts a `ViewableViewModelProtocol` instance to a tapable `Container`
+    ///
+    /// - Parameters:
+    ///     - appearance: The appearance of the tapable `Container`.
+    ///     - action: The closure to be executed upon tapping the container.
+    ///
+    /// - Returns:
+    ///     The `TapableContainer` representation of the `ViewableViewModelProtocol` instance
     func toTapableContainer(
         _ appearance: TapableContainerView.Appearance,
         _ action: (() -> Void)?
@@ -37,10 +70,20 @@ public extension ViewableViewModelProtocol {
 }
 
 extension ViewableViewModelProtocol {
+    /// Converts the view model to a `DeclaratableContainerView` if it is not already one.
+    ///
+    /// - Returns: A `DeclaratableContainerView` instance.
     private func toContainerIfNeeded() -> DeclaratableContainerViewAppearance {
         return (self as? DeclaratableContainerViewAppearance) ?? Container { self }
     }
     
+    /// Updates the specified property on the container view with the provided value.
+    ///
+    /// - Parameters:
+    ///     - property: A writable key path to a property on the container view.
+    ///     - value: The value to set the property to.
+    ///
+    /// - Returns: The view model instance, for chaining purposes.
     private func updateContainer<T>(
         _ property: WritableKeyPath<ContainerView.Appearance, T>,
         setTo value: T
@@ -49,6 +92,7 @@ extension ViewableViewModelProtocol {
         declarativeContainer.containerAppearance?[keyPath: property] = value
         return declarativeContainer
     }
+    
     
     @discardableResult
     public func insets(_ insets: UIEdgeInsets) -> ViewableViewModelProtocol {

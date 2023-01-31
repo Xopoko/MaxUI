@@ -1,6 +1,10 @@
 import UIKit
 import Combine
 
+/// The `Container` is the basic unit of MaxUI. The main task of the `Container` is to position the view on the layout.
+/// At the same time, the `Container` can NOT control ITS positioning.
+/// Also, only the `Container` has the ability to manage the `common` apperance (`backgroundColor`, `isUserInteractionEnabled`, etc.)
+/// and `layer` apperance (`shadow`, `borderColor`, `cornerRadius`, etc.)
 public struct Container: ComponentViewModelProtocol, DeclaratableContainerViewAppearance {
     public typealias ViewType = ContainerView
     
@@ -136,7 +140,8 @@ extension ContainerView {
     }
 }
 
-/// This protocol helps other components that want to use ContainerView's declarative behavior to implement Text apperance. To do this, you need to define the ContainerView appearance in your components.
+/// This protocol helps other components that want to use ContainerView's declarative behavior to implement Text appearance.
+/// To do this, you need to define the ContainerView appearance in your components.
 public protocol DeclaratableContainerViewAppearance: ViewableViewModelProtocol {
     var containerAppearance: ContainerView.Appearance? { get nonmutating set }
     

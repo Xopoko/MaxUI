@@ -1,6 +1,9 @@
 import UIKit
 import Combine
 
+/// HStack is a struct that implements the ComponentViewModelProtocol protocol.
+/// It represents a horizontal stack view that can be used in a SwiftUI-style framework for
+/// building user interfaces.
 public struct HStack: ComponentViewModelProtocol {
     public typealias ViewType = HStackView
     
@@ -20,10 +23,6 @@ public struct HStack: ComponentViewModelProtocol {
     public init(models: [ViewableViewModelProtocol]) {
         self._models = .init(models)
         self._appearance = .init(StackView.Appearance())
-    }
-    
-    public func setContent(@StackViewBuilder _ builder: () -> [ViewableViewModelProtocol]) {
-        models = builder()
     }
 }
 

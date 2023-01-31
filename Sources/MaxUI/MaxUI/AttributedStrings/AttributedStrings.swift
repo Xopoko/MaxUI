@@ -488,6 +488,10 @@ extension NSAttributedString {
 }
 
 fileprivate extension NSAttributedString {
+    /// Returns a new NSAttributedString with the given attributes set.
+    ///
+    /// - Parameter attributes: The attributes to be set on the NSAttributedString.
+    /// - Returns: A new NSAttributedString with the given attributes set.
     func set(
         _ attributes: [NSAttributedString.Key: Any]
     ) -> NSAttributedString {
@@ -502,6 +506,9 @@ fileprivate extension NSAttributedString {
         return mutable
     }
     
+    /// Returns the mutable paragraph style of the NSAttributedString.
+    ///
+    /// - Returns: The mutable paragraph style of the NSAttributedString, or nil if not found.
     var mutableParagraph: NSMutableParagraphStyle? {
         let mutable = NSMutableAttributedString(
             string: string,
@@ -522,38 +529,3 @@ fileprivate extension NSAttributedString {
         return nil
     }
 }
-//
-//public enum UnderlineStyle {
-//    case none
-//    case single
-//    case thick
-//    case double
-//    case patternDot
-//    case patternDash
-//    case patternDashDot
-//    case patternDashDotDot
-//    case byWord
-//
-//    public var value: Int {
-//        switch self {
-//        case .none:
-//            return 0
-//        case .single:
-//            return 1
-//        case .thick:
-//            return 2
-//        case .double:
-//            return 3
-//        case .patternDot:
-//            return 14
-//        case .patternDash:
-//            return 5
-//        case .patternDashDot:
-//            return 6
-//        case .patternDashDotDot:
-//            return 7
-//        case .byWord:
-//            return 8
-//        }
-//    }
-//}

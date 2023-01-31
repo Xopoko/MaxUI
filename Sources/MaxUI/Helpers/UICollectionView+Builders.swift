@@ -1,6 +1,13 @@
 import UIKit
 
 extension UICollectionView {
+    /// Creates a `UICollectionView` with a `UICollectionLayoutListConfiguration` layout.
+    ///
+    /// - Parameters:
+    ///   - style: The appearance style for the list. The default is `.plain`.
+    ///   - customInsets: The custom content insets for the list. The default is `nil`.
+    ///   - groupSpacing: The inter-group spacing between sections. The default is `0`.
+    /// - Returns: A newly created `UICollectionView`.
     public static func list(
         style: UICollectionLayoutListConfiguration.Appearance = .plain,
         customInsets: UIEdgeInsets? = nil,
@@ -29,12 +36,22 @@ extension UICollectionView {
         return Self.init(frame: .zero, collectionViewLayout: layout)
     }
     
+    /// Creates a `UICollectionView` with a `UICollectionViewFlowLayout` layout.
+    ///
+    /// - Parameters:
+    ///   - sectionInset: The section insets for the layout. The default is `.zero`.
+    ///   - itemSize: The size of each item in the layout.
+    ///   - headerHeight: The height of the header in the layout. The default is `.zero`.
+    ///   - footerHeight: The height of the footer in the layout. The default is `.zero`.
+    ///   - minimumLineSpacing: The minimum line spacing between items. The default is `.zero`.
+    ///   - contentInsets: The content insets for the layout. The default is `.zero`.
+    /// - Returns: A newly created `UICollectionView`.
     public static func singleSectionCollection(
         sectionInset: UIEdgeInsets = .zero,
         itemSize: CGSize,
-        headerHeight: CGFloat = 0,
-        footerHeight: CGFloat = 0,
-        minimumLineSpacing: CGFloat = 0,
+        headerHeight: CGFloat = .zero,
+        footerHeight: CGFloat = .zero,
+        minimumLineSpacing: CGFloat = .zero,
         contentInsets: UIEdgeInsets = .zero
     ) -> Self {
         let layout = UICollectionViewFlowLayout()

@@ -1,13 +1,33 @@
 import UIKit
 
+/// Defines appearance attributes shared among views
+/// and can be easily applied to multiple views.
 public enum SharedAppearance: Equatable, Withable {
+    
+    /// Layout attributes for the view.
     public struct Layout: Equatable, Withable {
+        
+        /// The edge insets of the view.
         public var insets: UIEdgeInsets = .zero
+        
+        /// The width of the view.
         public var width: CGFloat?
+        
+        /// The height of the view.
         public var height: CGFloat?
+        
+        /// The center Y coordinate of the view.
         public var centerY: CGFloat?
+        
+        /// The center X coordinate of the view.
         public var centerX: CGFloat?
         
+        /// Initializes layout attributes with the specified width, height and insets.
+        ///
+        /// - Parameters:
+        ///     - insets: The edge insets of the view.
+        ///     - width: The width of the view.
+        ///     - height: The height of the view.
         public init(
             insets: UIEdgeInsets = .zero,
             width: CGFloat? = nil,
@@ -18,6 +38,11 @@ public enum SharedAppearance: Equatable, Withable {
             self.height = height
         }
         
+        /// Initializes layout attributes with the specified size and insets.
+        ///
+        /// - Parameters:
+        ///     - size: The size of the view.
+        ///     - insets: The edge insets of the view.
         public init(
             size: CGSize,
             insets: UIEdgeInsets = .zero
@@ -26,15 +51,27 @@ public enum SharedAppearance: Equatable, Withable {
             self.height = size.height
             self.insets = insets
         }
-        
     }
     
+    /// Priority structure used to set layout priority for views in UIKit
+    ///
+    /// - verticalHuggingPriority: The priority of the view to hug its content vertically, which determines the relationship of the view's content height to the view's intrinsic content height.
+    /// - verticalCompressPriority: The priority of the view to compress vertically, which determines the relationship of the view's height to the content height.
+    /// - horizontalHuggingPriority: The priority of the view to hug its content horizontally, which determines the relationship of the view's content width to the view's intrinsic content width.
+    /// - horizontalCompressPriority: The priority of the view to compress horizontally, which determines the relationship of the view's width to the content width.
     public struct Priority: Equatable, Withable {
         public var verticalHuggingPriority: UILayoutPriority?
         public var verticalCompressPriority: UILayoutPriority?
         public var horizontalHuggingPriority: UILayoutPriority?
         public var horizontalCompressPriority: UILayoutPriority?
         
+        /// Initializes the Priority structure with optional values for each priority.
+        ///
+        /// - Parameters:
+        ///   - verticalHuggingPriority: The priority of the view to hug its content vertically.
+        ///   - verticalCompressPriority: The priority of the view to compress vertically.
+        ///   - horizontalHuggingPriority: The priority of the view to hug its content horizontally.
+        ///   - horizontalCompressPriority: The priority of the view to compress horizontally.
         public init(
             verticalHuggingPriority: UILayoutPriority? = nil,
             verticalCompressPriority: UILayoutPriority? = nil,
@@ -49,13 +86,27 @@ public enum SharedAppearance: Equatable, Withable {
     }
     
     public struct Layer: Equatable, Withable {
+        /// Represents a shadow for the layer.
         public struct Shadow: Equatable {
+            /// The offset on the x-axis of the shadow from the layer.
             public let offsetX: CGFloat?
+            /// The offset on the y-axis of the shadow from the layer.
             public let offsetY: CGFloat?
+            /// The color of the shadow.
             public let color: UIColor?
+            /// The opacity of the shadow.
             public let opacity: Float?
+            /// The radius of the shadow.
             public let radius: CGFloat?
             
+            /// Initializes a shadow with specified parameters.
+            ///
+            /// - Parameters:
+            ///   - offsetX: The offset on the x-axis of the shadow from the layer.
+            ///   - offsetY: The offset on the y-axis of the shadow from the layer.
+            ///   - color: The color of the shadow.
+            ///   - opacity: The opacity of the shadow.
+            ///   - radius: The radius of the shadow.
             public init(
                 offsetX: CGFloat? = nil,
                 offsetY: CGFloat? = nil,
@@ -71,13 +122,28 @@ public enum SharedAppearance: Equatable, Withable {
             }
         }
         
+        /// The radius of the rounded corners of the layer.
         public var cornerRadius: CGFloat?
+        /// An array of corners to round.
         public var cornersToRound: [UIRectCorner]?
+        /// The width of the border of the layer.
         public var borderWidth: CGFloat?
+        /// The color of the border of the layer.
         public var borderColor: UIColor?
+        /// The shadow for the layer.
         public var shadow: Shadow?
+        /// A Boolean value indicating whether the layer's content should be clipped to the bounds.
         public var masksToBounds: Bool?
         
+        /// Initializes a layer with specified parameters.
+        ///
+        /// - Parameters:
+        ///   - cornerRadius: The radius of the rounded corners of the layer.
+        ///   - cornersToRound: An array of corners to round.
+        ///   - borderWidth: The width of the border of the layer.
+        ///   - borderColor: The color of the border of the layer.
+        ///   - shadow: The shadow for the layer.
+        ///   - masksToBounds: A Boolean value indicating whether the layer's content should be clipped to the bounds.
         public init(
             cornerRadius: CGFloat? = nil,
             cornersToRound: [UIRectCorner]? = nil,
@@ -121,42 +187,55 @@ public enum SharedAppearance: Equatable, Withable {
     }
 }
 
+/// Defines predefined values for `SharedAppearance.Priority` struct to be used in UI components.
 extension SharedAppearance.Priority {
+    /// A priority that allows the component to have a low hugging and compression resistance
+    /// in the vertical axis.
     public static let flexibleVertical = SharedAppearance.Priority(
         verticalHuggingPriority: .defaultLow,
         verticalCompressPriority: .defaultLow
     )
     
+    /// A priority that allows the component to have a low hugging and compression resistance
+    /// in the horizontal axis.
     public static let flexibleHorizontal = SharedAppearance.Priority(
         horizontalHuggingPriority: .defaultLow,
         horizontalCompressPriority: .defaultLow
     )
     
+    /// A priority that allows the component to have a low hugging and compression resistance
+    /// in the vertical axis.
     public static let rigidVertical = SharedAppearance.Priority(
         verticalHuggingPriority: .defaultLow,
         verticalCompressPriority: .defaultLow
     )
     
+    /// A priority that allows the component to have a low hugging and compression resistance
+    /// in the horizontal axis.
     public static let rigidHorizontal = SharedAppearance.Priority(
         horizontalHuggingPriority: .defaultLow,
         horizontalCompressPriority: .defaultLow
     )
     
+    /// A priority that allows the component to fill its content in the vertical axis.
     public static let fillVertical = SharedAppearance.Priority(
         verticalHuggingPriority: .init(249),
         verticalCompressPriority: .required
     )
     
+    /// A priority that allows the component to shrink its content in the vertical axis.
     public static let shrinkVertical = SharedAppearance.Priority(
         verticalHuggingPriority: .required,
         verticalCompressPriority: .init(249)
     )
     
+    /// A priority that allows the component to fill its content in the horizontal axis.
     public static let fillHorizontal = SharedAppearance.Priority(
         horizontalHuggingPriority: .init(249),
         horizontalCompressPriority: .required
     )
     
+    /// A priority that allows the component to shrink its content in the horizontal axis.
     public static let shrinkHorizontal = SharedAppearance.Priority(
         horizontalHuggingPriority: .required,
         horizontalCompressPriority: .init(249)
@@ -164,6 +243,10 @@ extension SharedAppearance.Priority {
 }
 
 extension UIView {
+    /// Updates the constraint priority of the view with the given priority.
+    ///
+    /// - Parameters:
+    ///     - priority: The priority to set for the constraint.
     public func updateConstraintPriority(with priority: SharedAppearance.Priority) {
         if let verticalHuggingPriority = priority.verticalHuggingPriority {
             setContentHuggingPriority(verticalHuggingPriority, for: .vertical)
@@ -179,6 +262,10 @@ extension UIView {
         }
     }
     
+    /// Updates the layer of the view with the given layer
+    ///
+    /// - Parameters:
+    ///     - layer: The `SharedAppearance.Layer` to be applied to the view's layer.
     public func updateLayer(with layer: SharedAppearance.Layer) {
         if let cornerRadius = layer.cornerRadius {
             self.layer.cornerRadius = cornerRadius
@@ -214,6 +301,10 @@ extension UIView {
         }
     }
     
+    /// Updates the appearance of the current object with the provided common appearance object.
+    ///
+    /// - Parameters:
+    ///     - common: The common appearance object to be applied to the current object.
     public func updateCommon(with common: SharedAppearance.Common) {
         if let isUserInteractionEnabled = common.isUserInteractionEnabled {
             self.isUserInteractionEnabled = isUserInteractionEnabled

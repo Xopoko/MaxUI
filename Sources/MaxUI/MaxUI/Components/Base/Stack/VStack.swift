@@ -1,6 +1,9 @@
 import UIKit
 import Combine
 
+/// VStack is a struct that implements the ComponentViewModelProtocol protocol.
+/// It represents a vertical stack view that can be used in a SwiftUI-style framework for
+/// building user interfaces.
 public struct VStack: ComponentViewModelProtocol {
     public typealias ViewType = VStackView
     
