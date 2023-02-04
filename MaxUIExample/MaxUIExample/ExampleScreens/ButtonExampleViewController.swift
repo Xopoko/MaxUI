@@ -12,30 +12,30 @@ class ButtonExampleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        MaxUI.ScrollView {
-            MaxUI.VStack {
+        MScrollView {
+            MVStack {
                 containerForExample("Just a button") {
-                    Button("Button 1") {
+                    MButton("Button 1") {
                         print("tap on Button 1")
                     }
                 }
                 containerForExample("Button with .background(.systemBlue)") {
-                    Button("Button 2") {
+                    MButton("Button 2") {
                         print("tap on Button 2")
                     }
                     .backgroundColor(.systemBlue)
                 }
                 
                 containerForExample("Pro Max Ultra Button") {
-                    Button {
+                    MButton {
                         print("tap on Pro Max Ultra Button")
                     } label: {
-                        HStack {
-                            Text("🎉")
-                            Text("Hello, comrads")
+                        MHStack {
+                            MText("🎉")
+                            MText("Hello, comrads")
                                 .textColor(.white)
                                 .font(.systemFont(ofSize: 20, weight: .semibold))
-                            Image(UIImage(systemName: "brain.head.profile"))
+                            MImage(UIImage(systemName: "brain.head.profile"))
                                 .tintColor(.white)
                         }
                         .spacing(10)
@@ -59,14 +59,14 @@ class ButtonExampleViewController: UIViewController {
                 }
                 
                 containerForExample("Button with .insets(24). As you see, it becomes just bigger. Because insets works only on subview of container. Subview of Button here is just a Text.") {
-                    Button("Button 3") {
+                    MButton("Button 3") {
                         print("tap on Button 3")
                     }
                     .backgroundColor(.systemBlue)
                     .insets(24)
                 }
                 containerForExample("To set 'real' insets you have to wrap button to another container. You can ask me 'Why?' So the answer is: just deal with it! This library constructed on containers. And the best thing i made, create button as child of text and container. May be in future, i'll change it...") {
-                    Button("Button 4") {
+                    MButton("Button 4") {
                         print("tap on Button 4")
                     }
                     .backgroundColor(.systemGreen)
@@ -81,15 +81,15 @@ class ButtonExampleViewController: UIViewController {
         .configure(in: view, safeArea: true)
     }
     
-    private func containerForExample(_ explanation: String, _ builder: () -> ViewableViewModelProtocol) -> ViewableViewModelProtocol {
-        VStack {
-            Text(explanation)
+    private func containerForExample(_ explanation: String, _ builder: () -> MView) -> MView {
+        MVStack {
+            MText(explanation)
                 .centerMultiline()
                 .insets(16)
-            Image(UIImage(systemName: "chevron.down"))
+            MImage(UIImage(systemName: "chevron.down"))
                 .tintColor(.black)
-            Spacer(height: 20)
-            VStack {
+            MSpacer(height: 20)
+            MVStack {
                 builder()
             }
         }

@@ -13,12 +13,12 @@ enum Animation {
         /// `1.0`
         case long
         case custom(_ duration: TimeInterval)
-        
+
         /// Convenient way to run or ignore animation withing one line of code.
         subscript(_ enabled: Bool) -> Duration {
             return enabled ? self : .none
         }
-        
+
         var value: TimeInterval {
             switch self {
             case .none: return 0
@@ -30,14 +30,14 @@ enum Animation {
             }
         }
     }
-    
+
     enum Action {
         case `default`
         case start
         case end
         case linear
     }
-    
+
     case `default`
     case physical
     case transition(_ view: UIView)
@@ -45,7 +45,7 @@ enum Animation {
 
 // MARK: - Public Functions
 extension Animation {
-    
+
     func run(
         _ duration: Duration = .default,
         delay: TimeInterval = 0,
@@ -54,7 +54,7 @@ extension Animation {
         completion: (() -> Void)? = nil
     ) {
         let options = action.options(forAnimation: self)
-        
+
         switch self {
         case .default:
             UIView.animate(
@@ -101,14 +101,14 @@ extension Animation.Action {
             case .linear: return [.allowUserInteraction, .curveLinear]
             }
         }()
-        
+
         switch animation {
         case .transition:
             options.insert(.transitionCrossDissolve)
         default:
             break
         }
-        
+
         return options
     }
 }

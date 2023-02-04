@@ -1,7 +1,7 @@
 import UIKit
 
 extension UIView {
-    
+
     /// Add self as subivew to superview and apply constraints or custom layout
     /// - Parameters::
     ///     - in: container from Self (superview)
@@ -18,7 +18,7 @@ extension UIView {
     ) {
         superview.addSubview(self)
         translatesAutoresizingMaskIntoConstraints = false
-        
+
         let constraints = [
             topAnchor.constraint(
                 equalTo: toSafeArea
@@ -47,10 +47,10 @@ extension UIView {
         ]
 
         constraints.forEach { $0.priority = priority }
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     @discardableResult
     public func configure(
         withViewModel viewModel: ViewModelProtocol,
@@ -68,7 +68,7 @@ extension UIView {
             return subview
         } else {
             subviews.forEach { $0.removeFromSuperview() }
-            
+
             let view = viewModel.createAssociatedViewInstance()
             view.fill(
                 in: self,
@@ -76,11 +76,11 @@ extension UIView {
                 priority: priority,
                 toSafeArea: toSafeArea
             )
-            
+
             return view
         }
     }
-    
+
     @discardableResult
     public func configure(
         withViewModel viewModel: ViewModelProtocol,
@@ -94,11 +94,11 @@ extension UIView {
             return subview
         } else {
             subviews.forEach { $0.removeFromSuperview() }
-            
+
             let view = viewModel.createAssociatedViewInstance()
             addSubview(view)
             view.fill(with: layout, on: self)
-            
+
             return view
         }
     }

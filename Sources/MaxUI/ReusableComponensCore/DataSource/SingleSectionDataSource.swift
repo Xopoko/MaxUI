@@ -1,16 +1,16 @@
 import UIKit
 
 public protocol SingleSectionDataSourceProtocol {
-    
+
     /// Array of sections
     var section: CollectionSectionViewModelProtocol { get }
-    
+
     /// Array of all items
     var items: [CollectionItemViewModelProtocol] { get }
-    
+
     /// Scroll Delegate
     var scrollDelegate: UIScrollViewDelegate? { get set }
-    
+
     /// Method updates section
     /// - Parameters:
     ///     - section: for updating
@@ -25,44 +25,41 @@ public protocol SingleSectionDataSourceProtocol {
 
 public final class SingleSectionDataSource: NSObject, SingleSectionDataSourceProtocol {
     public var section: CollectionSectionViewModelProtocol = CollectionSection(items: [])
-    
+
     public var items: [CollectionItemViewModelProtocol] {
         return section.items
     }
-    
+
     public weak var scrollDelegate: UIScrollViewDelegate?
-    
+
     public func update(section: CollectionSectionViewModelProtocol) {
         self.section = section
     }
-    
+
     private weak var collectionView: UICollectionView?
-    
+
     private var reuseIdentifiers: Set<String> = []
     private var reuseHeaderIdentifiers: Set<String> = []
     private var reuseFooterIdentifiers: Set<String> = []
 
     private var trackDataConsumedBlock: (() -> Void)?
     private var trackDataConsumedTreshold: Int = 0
-    
+
     private lazy var dummyCell = DummyCell.Model()
-    private var flowLayout: UICollectionViewFlowLayout? {
-        collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
-    }
-    
+
     public init(collectionView: UICollectionView) {
         self.collectionView = collectionView
-                
+
         super.init()
-        
+
         configure(collectionView)
     }
-    
+
     private func configure(_ collectionView: UICollectionView) {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
-    
+
     public func trackDataConsumed(treshold: Int, block: @escaping () -> Void) {
         trackDataConsumedBlock = block
         trackDataConsumedTreshold = treshold
@@ -71,30 +68,30 @@ public final class SingleSectionDataSource: NSObject, SingleSectionDataSourcePro
 
 // MARK: - CollectionViewDataSource
 extension SingleSectionDataSource: UICollectionViewDataSource {
-    
+
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-    
+
     public func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection count: Int
     ) -> Int {
         return section.items.count
     }
-    
+
     public func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         let viewModel = section.items[indexPath.item]
-        
+
         let reuseIdentifier = viewModel.collectionCell.reuseIdentifier
         if !reuseIdentifiers.contains(reuseIdentifier) {
             collectionView.register(collectionCell: viewModel.collectionCell)
             reuseIdentifiers.insert(reuseIdentifier)
         }
-            
+
         let collectionCell = collectionView.dequeueReusableCell(
             withReuseIdentifier: reuseIdentifier,
             for: indexPath
@@ -103,10 +100,10 @@ extension SingleSectionDataSource: UICollectionViewDataSource {
         if let cell = collectionCell as? CollectionCellProtocol {
             cell.configureWithValue(viewModel)
         }
-                
+
         return collectionCell
     }
-    
+
     public func collectionView(
         _ collectionView: UICollectionView,
         viewForSupplementaryElementOfKind kind: String,
@@ -114,7 +111,7 @@ extension SingleSectionDataSource: UICollectionViewDataSource {
     ) -> UICollectionReusableView {
         registerDummyIfNeeded()
         let supplementaryKind = SupplementaryKind(from: kind)
-        
+
         switch supplementaryKind {
         case .header:
             guard let headerModel = section.header else {
@@ -129,19 +126,19 @@ extension SingleSectionDataSource: UICollectionViewDataSource {
                 collectionView.registerHeader(collectionCell: headerModel.collectionCell)
                 reuseHeaderIdentifiers.insert(reuseIdentifier)
             }
-            
+
             let headerCell = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: reuseIdentifier,
                 for: indexPath
             )
-            
+
             if let header = headerCell as? CollectionCellProtocol {
                 header.configureWithValue(headerModel)
             }
-            
+
             return headerCell
-            
+
         case .footer:
             guard let footerModel = section.footer else {
                 return collectionView.dequeueReusableSupplementaryView(
@@ -155,17 +152,17 @@ extension SingleSectionDataSource: UICollectionViewDataSource {
                 collectionView.registerFooter(collectionCell: footerModel.collectionCell)
                 reuseFooterIdentifiers.insert(reuseIdentifier)
             }
-            
+
             let footerCell = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: reuseIdentifier,
                 for: indexPath
             )
-            
+
             if let footer = footerCell as? CollectionCellProtocol {
                 footer.configureWithValue(footerModel)
             }
-            
+
             return footerCell
         }
     }
@@ -173,7 +170,7 @@ extension SingleSectionDataSource: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 extension SingleSectionDataSource: UICollectionViewDelegate {
-    
+
     public func collectionView(
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
@@ -181,12 +178,12 @@ extension SingleSectionDataSource: UICollectionViewDelegate {
         guard let viewModel = section.items[safe: indexPath.row] else {
             return
         }
-        
+
         if let item = viewModel as? ListItemActionable {
             item.didSelect?()
         }
     }
-    
+
     public func collectionView(
         _ collectionView: UICollectionView,
         willDisplay cell: UICollectionViewCell,
@@ -195,11 +192,11 @@ extension SingleSectionDataSource: UICollectionViewDelegate {
         guard let viewModel = section.items[safe: indexPath.row] else {
             return
         }
-        
+
         if let collectionCell = cell as? CollectionCellProtocol {
             collectionCell.willDisplay(viewModel)
         }
-        
+
         guard let trackDataConsumedBlock = trackDataConsumedBlock else {
             return
         }
@@ -214,7 +211,7 @@ extension SingleSectionDataSource: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollDelegate?.scrollViewDidScroll?(scrollView)
     }
-    
+
     public func scrollViewDidEndDragging(
         _ scrollView: UIScrollView,
         willDecelerate decelerate: Bool
@@ -235,7 +232,7 @@ extension SingleSectionDataSource {
             collectionView?.registerHeader(collectionCell: dummyCell.collectionCell)
             reuseHeaderIdentifiers.insert(id)
         }
-        
+
         if !reuseFooterIdentifiers.contains(id) {
             collectionView?.registerFooter(collectionCell: dummyCell.collectionCell)
             reuseFooterIdentifiers.insert(id)

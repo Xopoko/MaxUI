@@ -1,26 +1,26 @@
 import UIKit
 
 extension UIView {
-    
+
     func fill(with layout: SharedAppearance.Layout = .init(), on superview: UIView? = nil) {
         guard let superview = superview ?? self.superview else { return }
-        
+
         translatesAutoresizingMaskIntoConstraints = false
-        
+
         MaximUISides.allCases.forEach {
             fill(side: $0, with: layout, on: superview)
         }
     }
-    
+
     private enum MaximUISides: String, CaseIterable {
         case top, bottom, left, right, width, height
-        
+
         var identifier: String {
             return "maximUI_\(self.rawValue)Constraint"
         }
     }
-    
-    // swiftlint: disable cyclomatic_complexity
+
+    // swiftlint: disable cyclomatic_complexity function_body_length
     private func fill(
         side: MaximUISides,
         with layout: SharedAppearance.Layout,
@@ -108,6 +108,6 @@ extension UIView {
                     .forEach { $0.isActive = false }
             }
         }
-        
+
     }
 }

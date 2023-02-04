@@ -6,23 +6,23 @@ public struct UIViewControllerPreview: UIViewControllerRepresentable {
     public init(_ builder: @escaping () -> UIViewController) {
         viewController = builder()
     }
-    
+
     // MARK: UIViewControllerRepresentable
     public func makeUIViewController(context: Context) -> UIViewController { viewController }
-   
+
     public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
 public struct UIViewPreview: UIViewRepresentable {
     public let view: UIView
-    
+
     public init(_ builder: @escaping () -> UIView) {
         view = builder()
     }
-    
+
     // MARK: UIViewRepresentable
     public func makeUIView(context: Context) -> UIView { view }
-    
+
     public func updateUIView(_ view: UIView, context: Context) {}
 }
 
@@ -30,23 +30,23 @@ public struct ComponentPreview: UIViewRepresentable {
     public enum Distribution {
         case fill, center, top
     }
-    
-    public let view: ViewableViewModelProtocol
+
+    public let view: MView
     private let distribution: Distribution
-    
+
     public init(
         distribution: Distribution = .center,
-        _ builder: @escaping () -> ViewableViewModelProtocol
+        _ builder: @escaping () -> MView
     ) {
         view = builder()
         self.distribution = distribution
     }
-    
+
     // MARK: UIViewRepresentable
     public func makeUIView(context: Context) -> UIView {
         switch distribution {
         case .center:
-            return ScrollView {
+            return MScrollView {
                 view
             }
             .distribution(.center(offset: .zero))
@@ -54,14 +54,14 @@ public struct ComponentPreview: UIViewRepresentable {
         case .fill:
             return view.createAssociatedViewInstance()
         case .top:
-            return VStack {
+            return MHStack {
                 view
-                Spacer()
+                MSpacer()
             }
             .createAssociatedViewInstance()
         }
     }
-    
+
     public func updateUIView(_ view: UIView, context: Context) {
         view.fill()
     }

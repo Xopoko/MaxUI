@@ -1,6 +1,6 @@
 import UIKit
 
-extension ViewableViewModelProtocol {
+extension MView {
     /// Configures a view with the given view model information.
     ///
     /// - Parameters:

@@ -32,11 +32,12 @@ extension UICollectionView {
             }
             return section
         }
-        
+
         return Self.init(frame: .zero, collectionViewLayout: layout)
     }
-    
-    /// Creates a `UICollectionView` with a `UICollectionViewFlowLayout` layout.
+
+    /// Creates a `UICollectionView` with a `UICollectionViewFlowLayout` layout with only one
+    /// section and header/footer ability.
     ///
     /// - Parameters:
     ///   - sectionInset: The section insets for the layout. The default is `.zero`.
@@ -68,7 +69,7 @@ extension UICollectionView {
         )
         layout.itemSize = itemSize
         layout.minimumLineSpacing = minimumLineSpacing
-        
+
         let collection = Self(
             frame: .zero,
             collectionViewLayout: layout

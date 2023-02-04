@@ -10,7 +10,7 @@ public class CollectionSection: CollectionSectionViewModelProtocol {
     public var items: [CollectionItemViewModelProtocol]
     public var header: CollectionItemViewModelProtocol?
     public var footer: CollectionItemViewModelProtocol?
-    
+
     public init(
         items: [CollectionItemViewModelProtocol],
         header: CollectionItemViewModelProtocol? = nil,
@@ -26,7 +26,7 @@ public extension Array where Element == CollectionItemViewModelProtocol {
     func toSection() -> CollectionSection {
         return CollectionSection(items: self)
     }
-    
+
     func toSections() -> [CollectionSection] {
         return [toSection()]
     }

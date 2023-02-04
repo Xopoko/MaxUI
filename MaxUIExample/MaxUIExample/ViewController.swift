@@ -20,26 +20,26 @@ extension ViewController {
         view.backgroundColor = .white
         title = "MaxUI Examples"
         navigationController?.navigationBar.prefersLargeTitles = true
-        ScrollView {
-            VStack {
+        MScrollView {
+            MVStack {
                 for screen in Screen.exampleScreens {
-                    HStack {
-                        VStack {
-                            HStack {
-                                Text(screen.title)
-                                Spacer(width: 5)
-                                Text(screen.componentName)
+                    MHStack {
+                        MVStack {
+                            MHStack {
+                                MText(screen.title)
+                                MSpacer(width: 5)
+                                MText(screen.componentName)
                                     .font(.systemFont(ofSize: 20, weight: .bold))
-                                Spacer()
+                                MSpacer()
                             }
-                            Text(screen.description)
+                            MText(screen.description)
                                 .font(.systemFont(ofSize: 14))
                                 .textColor(.gray)
                                 .multiline()
                         }
                         .spacing(10)
-                        Spacer()
-                        Image(UIImage(systemName: "chevron.right"))
+                        MSpacer()
+                        MImage(UIImage(systemName: "chevron.right"))
                             .tintColor(.lightGray)
                     }
                     .spacing(4)

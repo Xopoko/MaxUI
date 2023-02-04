@@ -3,12 +3,12 @@ import UIKit
 public protocol AnyViewClass: UIView {}
 
 public protocol ViewModelProtocol {
-    
+
     var view: AnyViewClass.Type { get }
 }
 
 extension ViewModelProtocol {
-    
+
     /*
      * Load UIView instance and fill it with ViewModel
      */

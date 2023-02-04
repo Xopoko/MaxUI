@@ -1,30 +1,40 @@
 import UIKit
 import Combine
 
-public struct ScrollView: ComponentViewModelProtocol {
-    public typealias ViewType = ScrollViewView
-        
-    public var model: ViewableViewModelProtocol? {
+/// The MScrollView is a Componentable struct that provides a customizable scrolling view.
+public struct MScrollView: Componentable {
+    public typealias ViewType = MScrollViewView
+
+    /// The model that provides the content for the scroll view.
+    public var model: MView? {
         get { _model.value }
         nonmutating set { _model.send(newValue) }
     }
-    
+
+    /// The appearance for the scroll view.
     public var scrollViewAppearance: Appearance? {
         get { _appearance.value }
         nonmutating set { if let newValue { _appearance.send(newValue) } }
     }
-    
+
+    /// The refresh control for the scroll view.
     public var refreshControl: UIRefreshControl? {
         get { _refreshControl.value }
         nonmutating set { _refreshControl.send(newValue) }
     }
-    
-    fileprivate let _model: CurrentValueSubject<ViewableViewModelProtocol?, Never>
+
+    fileprivate let _model: CurrentValueSubject<MView?, Never>
     fileprivate let _appearance: CurrentValueSubject<Appearance, Never>
     fileprivate let _refreshControl: CurrentValueSubject<UIRefreshControl?, Never>
-    
+
+    /// Initializes an `MScrollView` with the content view and appearance.
+    ///
+    /// - Parameters:
+    ///   - contentView: A closure that returns the model to use as the content view.
+    ///   - appearance: The appearance for the scroll view. Default is an empty `Appearance` struct.
+    ///   - refreshControl: The refresh control for the scroll view. Default is `nil`.
     public init(
-        _ contentView: () -> ViewableViewModelProtocol,
+        _ contentView: () -> MView,
         appearance: Appearance = .init(),
         refreshControl: UIRefreshControl? = nil
     ) {
@@ -32,9 +42,15 @@ public struct ScrollView: ComponentViewModelProtocol {
         self._appearance = .init(appearance)
         self._refreshControl = .init(refreshControl)
     }
-    
+
+    /// Initializes an `MScrollView` with the model, appearance, and refresh control.
+    ///
+    /// - Parameters:
+    ///   - model: The model that provides the content for the scroll view.
+    ///   - appearance: The appearance for the scroll view. Default is an empty `Appearance` struct.
+    ///   - refreshControl: The refresh control for the scroll view. Default is `nil`.
     public init(
-        model: ViewableViewModelProtocol?,
+        model: MView?,
         appearance: Appearance = .init(),
         refreshControl: UIRefreshControl? = nil
     ) {
@@ -44,14 +60,15 @@ public struct ScrollView: ComponentViewModelProtocol {
     }
 }
 
-public final class ScrollViewView: ControlsFrendlyScrollView {
+// View which will be created from the MScrollView. Usually you don't have to use it directly.
+public final class MScrollViewView: ControlsFriendlyScrollView {
     private var contentView: UIView?
-    private var appearance: ScrollView.Appearance?
+    private var appearance: MScrollView.Appearance?
     private var cancellables = Set<AnyCancellable>()
 }
 
-extension ScrollViewView: ReusableView {
-    public func configure(with data: ScrollView) {
+extension MScrollViewView: ReusableView {
+    public func configure(with data: MScrollView) {
         data._model
             .compactMap { $0 }
             .sink { [weak self] model in
@@ -62,7 +79,7 @@ extension ScrollViewView: ReusableView {
                 }
             }
             .store(in: &cancellables)
-        
+
         data._appearance
             .sink { [weak self] appearance in
                 self?.updateAppearance(appearance: appearance)
@@ -71,28 +88,28 @@ extension ScrollViewView: ReusableView {
                 }
             }
             .store(in: &cancellables)
-        
+
         data._refreshControl
             .sink { [weak self] refreshControl in
                 self?.refreshControl = refreshControl
             }
             .store(in: &cancellables)
     }
-    
+
     public func prepareForReuse() {
         cancellables.removeAll()
     }
 }
 
 // MARK: - Private methods
-private extension ScrollViewView {
-    private func rebuildView(contentView: UIView, appearance: ScrollView.Appearance) {
+extension MScrollViewView {
+    private func rebuildView(contentView: UIView, appearance: MScrollView.Appearance) {
         subviews.forEach { $0.removeFromSuperview() }
         addSubview(contentView)
-        
+
         translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         var constraints: [NSLayoutConstraint] = []
         switch appearance.distribution {
         case .fill(let insets):
@@ -111,7 +128,7 @@ private extension ScrollViewView {
                 break
             }
         }
-        
+
         switch appearance.axis {
         case .vertical:
             constraints.append(contentView.widthAnchor.constraint(equalTo: widthAnchor))
@@ -120,34 +137,34 @@ private extension ScrollViewView {
         @unknown default:
             break
         }
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
-    private func updateAppearance(appearance: ScrollView.Appearance) {
+
+    private func updateAppearance(appearance: MScrollView.Appearance) {
         guard appearance != self.appearance else { return }
-        
+
         contentInset = appearance.contentInsets
         showsVerticalScrollIndicator = appearance.showsVerticalScrollIndicator
         showsHorizontalScrollIndicator = appearance.showsHorizontalScrollIndicator
-        
+
         self.appearance = appearance
     }
 }
 
-extension ScrollView {
+extension MScrollView {
     public struct Appearance: Equatable, Withable {
         public enum Distribution: Equatable {
             case fill(insets: UIEdgeInsets)
             case center(offset: CGFloat)
         }
-        
+
         public var axis: NSLayoutConstraint.Axis
         public var distribution: Distribution
         public var contentInsets: UIEdgeInsets
         public var showsVerticalScrollIndicator: Bool
         public var showsHorizontalScrollIndicator: Bool
-        
+
         public init(
             axis: NSLayoutConstraint.Axis = .vertical,
             distribution: Distribution = .fill(insets: .zero),
@@ -164,63 +181,87 @@ extension ScrollView {
     }
 }
 
-/// This protocol helps other components that want to use ScrollView's declarative behavior to implement Text apperance. To do this, you need to define the ScrollView appearance in your components.
-public protocol DeclaratableScrollViewAppearance {
-    var scrollViewAppearance: ScrollView.Appearance? { get nonmutating set }
-    
-    func axis(_ axis: NSLayoutConstraint.Axis) -> Self
-    func distribution(_ distribution: ScrollView.Appearance.Distribution) -> Self
-    func contentInsets(_ contentInsets: UIEdgeInsets) -> Self
-    func showsVerticalScrollIndicator(_ showsVerticalScrollIndicator: Bool) -> Self
-    func showsHorizontalScrollIndicator(_ showsHorizontalScrollIndicator: Bool) -> Self
+/// This protocol helps other components that want to use MScrollView's declarative
+/// behavior to implement MText apperance. To do this, you need to define the MScrollView
+/// appearance in your components.
+public protocol Scrollable {
+    var scrollViewAppearance: MScrollView.Appearance? { get nonmutating set }
 }
 
-extension ScrollView: DeclaratableScrollViewAppearance {
-    public func axis(_ axis: NSLayoutConstraint.Axis) -> ScrollView {
+extension MScrollView: Scrollable {
+    /// Sets the axis of the scroll view.
+    ///
+    /// - Parameter axis: The new axis to set.
+    /// - Returns: The updated scrollable instance.
+    public func axis(_ axis: NSLayoutConstraint.Axis) -> MScrollView {
         scrollViewAppearance?.axis = axis
         return self
     }
-    
-    public func distribution(_ distribution: Appearance.Distribution) -> ScrollView {
+
+    /// Sets the distribution of the scroll view.
+    ///
+    /// - Parameter distribution: The new distribution to set.
+    /// - Returns: The updated scrollable instance.
+    public func distribution(_ distribution: Appearance.Distribution) -> MScrollView {
         scrollViewAppearance?.distribution = distribution
         return self
     }
-    
-    public func contentInsets(_ contentInsets: UIEdgeInsets) -> ScrollView {
+
+    /// Sets the content insets of the scroll view.
+    ///
+    /// - Parameter contentInsets: The new content insets to set.
+    /// - Returns: The updated scrollable instance.
+    public func contentInsets(_ contentInsets: UIEdgeInsets) -> MScrollView {
         scrollViewAppearance?.contentInsets = contentInsets
         return self
     }
-    
-    public func showsVerticalScrollIndicator(_ showsVerticalScrollIndicator: Bool) -> ScrollView {
+
+    /// Shows or hides the vertical scroll indicator of the scroll view.
+    ///
+    /// - Parameter showsVerticalScrollIndicator: A boolean value indicating whether to show the vertical scroll indicator.
+    /// - Returns: The updated scrollable instance.
+    public func showsVerticalScrollIndicator(_ showsVerticalScrollIndicator: Bool) -> MScrollView {
         scrollViewAppearance?.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         return self
     }
-    
+
+    /// Shows or hides the horizontal scroll indicator of the scroll view.
+    ///
+    /// - Parameter showsHorizontalScrollIndicator: A boolean value indicating whether to show the horizontal scroll indicator.
+    /// - Returns: The updated scrollable instance.
     public func showsHorizontalScrollIndicator(
         _ showsHorizontalScrollIndicator: Bool
-    ) -> ScrollView {
+    ) -> MScrollView {
         scrollViewAppearance?.showsVerticalScrollIndicator = showsHorizontalScrollIndicator
         return self
     }
-    
+
+    /// Shows or hides the scroll indicators of the scroll view.
+    ///
+    /// - Parameter showsScrollIndicators: A boolean value indicating whether to show the scroll indicators.
+    /// - Returns: The updated scrollable instance.
     public func showsScrollIndicators(
         _ showsScrollIndicators: Bool
-    ) -> ScrollView {
+    ) -> MScrollView {
         scrollViewAppearance?.showsVerticalScrollIndicator = showsScrollIndicators
         scrollViewAppearance?.showsHorizontalScrollIndicator = showsScrollIndicators
         return self
     }
-    
+
+    /// Adds a refresh control to the scroll view.
+    ///
+    /// - Parameter refreshControl: The refresh control to add.
+    /// - Returns: The updated scroll view instance.
     public func refreshControl(
         _ refreshControl: UIRefreshControl
-    ) -> ScrollView {
+    ) -> MScrollView {
         self.refreshControl = refreshControl
         return self
     }
 }
 
-extension ScrollView: Stylable {
-    public func style(_ appearance: ScrollView.Appearance) -> Self {
+extension MScrollView: Stylable {
+    public func style(_ appearance: MScrollView.Appearance) -> Self {
         scrollViewAppearance = appearance
         return self
     }

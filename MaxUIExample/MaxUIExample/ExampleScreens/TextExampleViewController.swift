@@ -8,31 +8,31 @@
 import MaxUI
 
 class TextExampleViewController: UIViewController {
-    @MaxUI.State var stateExample: String = ""
+    @MaxUI.MState var stateExample: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        ScrollView {
-            VStack {
-                Text("This is just a text without a modifiers")
-                Divider()
-                Text("This is a text with several modifiers")
+        MScrollView {
+            MVStack {
+                MText("This is just a text without a modifiers")
+                MDivider()
+                MText("This is a text with several modifiers")
                     .font(.systemFont(ofSize: 20, weight: .light))
                     .textColor(.lightGray)
                     .textAligment(.right)
                     .numberOfLines(1)
                     .adjustsFontSizeToFitWidth(true)
-                Divider()
-                Text("It's a long, multi-line script. Obviously, I'm going to use Lorem ipsum. I'm sorry...\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                MDivider()
+                MText("It's a long, multi-line script. Obviously, I'm going to use Lorem ipsum. I'm sorry...\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
                     .multiline()
-                Divider()
-                Text("Let's try to use")
+                MDivider()
+                MText("Let's try to use")
                     .textAligment(.center)
-                Text("@State")
+                MText("@MState")
                     .textAligment(.center)
                     .font(.systemFont(ofSize: 16, weight: .bold))
-                Text("(just tap on this text)")
+                MText("(just tap on this text)")
                     .textAligment(.center)
                     .textColor(.systemBlue)
                     .borderWidth(1)
@@ -42,12 +42,12 @@ class TextExampleViewController: UIViewController {
                     .onSelect { [weak self] in
                         self?.stateExample = "\(String(UnicodeScalar(Array(0x1F300...0x1F3F0).randomElement()!)!))"
                     }
-                Text($stateExample)
+                MText($stateExample)
                     .textAligment(.center)
                     .font(.systemFont(ofSize: 40, weight: .bold))
                 
-                Divider()
-                Text {
+                MDivider()
+                MText {
                     "Just a link"
                         .foregroundColor(.systemBlue)
                         .underlineStyle(.single)
@@ -58,8 +58,8 @@ class TextExampleViewController: UIViewController {
                 .onSelect(animation: .alpha) {
                     UIApplication.shared.open(URL(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
                 }
-                Divider()
-                Text {
+                MDivider()
+                MText {
                     "To show you additional "
                     "Text"
                         .font(.systemFont(ofSize: 20, weight: .bold))
@@ -88,7 +88,7 @@ class TextExampleViewController: UIViewController {
                         .alignment(.center)
                 }
                 .multiline()
-                Divider()
+                MDivider()
             }
             .spacing(20)
             .insets(24)

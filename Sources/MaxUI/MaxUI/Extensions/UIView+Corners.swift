@@ -10,7 +10,7 @@ public extension UIView {
         self.clipsToBounds = true
         self.layer.cornerRadius = radius
         var arr: CACornerMask = []
-        
+
         for corner in corners where corners.contains(corner) {
             switch corner {
             case .topLeft:

@@ -1,11 +1,11 @@
 import UIKit
 
 extension UICollectionView {
-    
+
     func register(collectionCell: AnyCollectionCellClass.Type) {
         register(collectionCell, forCellWithReuseIdentifier: collectionCell.reuseIdentifier)
     }
-    
+
     func registerHeader(collectionCell: AnyCollectionCellClass.Type) {
         register(
             collectionCell,
@@ -13,7 +13,7 @@ extension UICollectionView {
             withReuseIdentifier: collectionCell.reuseIdentifier
         )
     }
-    
+
     func registerFooter(collectionCell: AnyCollectionCellClass.Type) {
         register(
             collectionCell,
@@ -27,7 +27,7 @@ public extension UICollectionView {
     var flowLayout: UICollectionViewFlowLayout? {
         collectionViewLayout as? UICollectionViewFlowLayout
     }
-    
+
     var headerHeight: CGFloat {
         get {
             flowLayout?.headerReferenceSize.height ?? .zero
@@ -36,7 +36,7 @@ public extension UICollectionView {
             flowLayout?.headerReferenceSize.height = newValue
         }
     }
-    
+
     var footerHeight: CGFloat {
         get {
             flowLayout?.footerReferenceSize.height ?? .zero
@@ -45,7 +45,7 @@ public extension UICollectionView {
             flowLayout?.footerReferenceSize.height = newValue
         }
     }
-    
+
     var fullHeight: CGFloat {
         headerHeight +
         contentSize.height +
