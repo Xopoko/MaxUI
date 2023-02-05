@@ -120,12 +120,16 @@ extension ContainerView: ReusableView {
         data._model
             .sink { [weak self] model in
                 guard let self, let model else { return }
-
-                self.subviews.forEach { $0.removeFromSuperview() }
-                let contentView = model.createAssociatedViewInstance()
-                self.contentView = contentView
-                self.addSubview(contentView)
-                contentView.fill(with: data.containerAppearance?.layout ?? .init())
+                
+                if [model].isPossibleToReuse(with: self.subviews) {
+                    [model].reuse(with: self.subviews)
+                } else {
+                    self.subviews.forEach { $0.removeFromSuperview() }
+                    let contentView = model.createAssociatedViewInstance()
+                    self.contentView = contentView
+                    self.addSubview(contentView)
+                    contentView.fill(with: data.containerAppearance?.layout ?? .init())
+                }
             }
             .store(in: &cancellables)
 

@@ -90,43 +90,33 @@ public struct MZStack: Componentable {
     }
 }
 
-public final class MStackZView: UIView {}
+public final class MStackZView: UIView {
+    private var cancellables = Set<AnyCancellable>()
+}
 
 extension MStackZView: ReusableView {
     public func configure(with data: MZStack) {
-        var canReuse = subviews.count == data.models.count
-        if canReuse {
-            for (index, viewModel) in data.models.enumerated() {
-                guard
-                    let view = subviews[safe: index],
-                    type(of: view) == viewModel.viewModel.view
-                else {
-                    canReuse = false
-                    break
-                }
-            }
-        }
-
-        if canReuse {
-            for (index, viewModel) in data.models.enumerated() {
-                guard let view = subviews[safe: index] as? AnyValueConfigurable else {
-                    continue
-                }
-                (view as? PrepareReusable)?.prepareForReuse()
-                view.configureWithValue(viewModel.viewModel)
-            }
-        } else {
-            subviews.forEach { $0.removeFromSuperview() }
-
-            data.models.forEach { model in
-                let view = model.viewModel.createAssociatedViewInstance()
-                addSubview(view)
-                if let customLayout = model.customLayout {
-                    customLayout(self, view)
+        data._models
+            .sink { [weak self] models in
+                guard let self else { return }
+                
+                let mViews = models.map { $0.viewModel }
+                if mViews.isPossibleToReuse(with: self.subviews) {
+                    mViews.reuse(with: self.subviews)
                 } else {
-                    view.fill()
+                    self.subviews.forEach { $0.removeFromSuperview() }
+
+                    models.forEach { model in
+                        let view = model.viewModel.createAssociatedViewInstance()
+                        self.addSubview(view)
+                        if let customLayout = model.customLayout {
+                            customLayout(self, view)
+                        } else {
+                            view.fill()
+                        }
+                    }
                 }
             }
-        }
+            .store(in: &cancellables)
     }
 }
