@@ -19,70 +19,75 @@ public struct MDivider: Componentable {
 }
 
 public final class MDividerView: UIView {
-    private let view = UIView()
-    private var heightConstraint: NSLayoutConstraint?
-
-    public init() {
-        super.init(frame: .zero)
-
-        setupLayout()
+    private let path = UIBezierPath()
+    private var appearance: Appearance?
+    private var cancellables = Set<AnyCancellable>()
+    
+    public override var intrinsicContentSize: CGSize {
+        let thickness = appearance?.thickness ?? 1 / UIScreen.main.scale
+        return CGSize(width: UIView.noIntrinsicMetric, height: thickness)
     }
+    
+    public override func draw(_ rect: CGRect) {
+        super.draw(rect)
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        let thickness = appearance?.thickness ?? 1 / UIScreen.main.scale
+        let yPosition = (rect.height / 2) - (thickness / 2)
+        
+        appearance?.color.setStroke()
+        
+        path.lineWidth = thickness
+        path.move(to: CGPoint(x: 0, y: yPosition))
+        path.addLine(to: CGPoint(x: rect.width, y: yPosition))
+        path.stroke()
     }
+       
 }
 
 extension MDividerView: ReusableView {
     public func configure(with data: MDivider) {
+        data._appearance
+            .sink { [weak self] appearance in
+                self?.updateAppearance(appearance: appearance)
+            }
+            .store(in: &cancellables)
+        
         updateAppearance(appearance: data.appearance)
     }
 }
 
 // MARK: - Private methods
 extension MDividerView {
-    private func setupLayout() {
-        view.fill(in: self)
-        heightConstraint = view.heightAnchor.constraint(equalToConstant: .zero)
-        heightConstraint?.isActive = true
-    }
-
     private func updateAppearance(appearance: Appearance) {
-        view.layer.cornerRadius = appearance.cornerRadius
-        view.backgroundColor = appearance.color
-        heightConstraint?.constant = appearance.height
+        guard appearance != self.appearance else { return }
+        
+        setNeedsDisplay()
+        backgroundColor = .clear
+        
+        self.appearance = appearance
     }
 }
 
 extension MDividerView {
     public struct Appearance: Equatable {
-        public var cornerRadius: CGFloat
         public var color: UIColor
-        public var height: CGFloat
+        public var thickness: CGFloat
 
         public init(
-            cornerRadius: CGFloat = .zero,
-            color: UIColor = .lightGray,
-            height: CGFloat = 1 / UIScreen.main.scale
+            color: UIColor = .systemGray,
+            thickness: CGFloat = 1 / UIScreen.main.scale
         ) {
-            self.cornerRadius = cornerRadius
             self.color = color
-            self.height = height
+            self.thickness = thickness
         }
     }
 }
 
-extension MDivider {
-    /// Sets the cornerRadius for the `Divider` appearance.
-    ///
-    /// - Parameter cornerRadius: The cornerRadius to set.
-    /// - Returns: The updated `Divider` instance.
-    @discardableResult
-    public func cornerRadius(_ cornerRadius: CGFloat) -> Self {
-        appearance.cornerRadius = cornerRadius
-        return self
-    }
+extension MDividerView: Spaceable {
+    var isReadyToBeSpaceable: Bool { true }
+}
 
+extension MDivider {
     /// Sets the color for the `Divider` appearance.
     ///
     /// - Parameter color: A color to set.
@@ -95,11 +100,11 @@ extension MDivider {
 
     /// Sets the height for the `Divider` appearance.
     ///
-    /// - Parameter height: A height to set.
+    /// - Parameter thickness: A thickness to set.
     /// - Returns: The updated `Divider` instance.
     @discardableResult
-    public func height(_ height: CGFloat) -> Self {
-        appearance.height = height
+    public func thickness(_ thickness: CGFloat) -> Self {
+        appearance.thickness = thickness
         return self
     }
 }

@@ -31,12 +31,14 @@ class ButtonExampleViewController: UIViewController {
                         print("tap on Pro Max Ultra Button")
                     } label: {
                         MHStack {
+                            MSpacer()
                             MText("🎉")
                             MText("Hello, comrads")
                                 .textColor(.white)
                                 .font(.systemFont(ofSize: 20, weight: .semibold))
                             MImage(UIImage(systemName: "brain.head.profile"))
                                 .tintColor(.white)
+                            MSpacer()
                         }
                         .spacing(10)
                     }

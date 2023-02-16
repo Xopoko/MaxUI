@@ -12,6 +12,7 @@ extension UIStackView {
                 let view = model.createAssociatedViewInstance()
                 addArrangedSubview(view)
             }
+            bindSpaceables(arrangedSubviews)
         }
     }
 
@@ -24,5 +25,40 @@ extension UIStackView {
 
     public func removeArrangedSubviews() {
         arrangedSubviews.forEach { $0.removeFromSuperview() }
+    }
+}
+
+extension UIStackView {
+    private func bindSpaceables(_ views: [UIView]) {
+        guard views.count > 1 else { return }
+        
+        var spaceables: [Spaceable] = []
+        for view in views {
+            if let spaceable = view as? Spaceable {
+                spaceables.append(spaceable)
+            }
+        }
+        
+        guard spaceables.count > 1 else { return }
+        
+        var firstSpaceable: Spaceable?
+        
+        for spaceable in spaceables where spaceable.isReadyToBeSpaceable {
+            if firstSpaceable == nil {
+                firstSpaceable = spaceable
+            } else {
+                guard let firstSpaceable else { continue }
+                
+                if axis == .horizontal {
+                    spaceable.widthAnchor.constraint(
+                        equalTo: firstSpaceable.widthAnchor
+                    ).isActive = true
+                } else {
+                    spaceable.heightAnchor.constraint(
+                        equalTo: firstSpaceable.heightAnchor
+                    ).isActive = true
+                }
+            }
+        }
     }
 }

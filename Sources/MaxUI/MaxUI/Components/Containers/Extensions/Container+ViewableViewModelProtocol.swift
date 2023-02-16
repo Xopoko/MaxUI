@@ -8,14 +8,6 @@ public extension MView {
         Container { self }
     }
 
-    /// Centers the `MView` instance within a `MStackView`
-    ///
-    /// - Parameter The axis of the `MStackView` along which the models are arranged. Default value is `.vertical`.
-    /// - Returns: The `MStackView.Model` representation of the centered `MView` instance
-    func toCenter(axis: NSLayoutConstraint.Axis = .vertical) -> MStackView.Model {
-        MStackView.Model(models: [self], appearance: .init(axis: axis, alignment: .center))
-    }
-
     /// Wraps the `MView` in a new `Gradient` with appearance
     ///
     /// - Parameters:

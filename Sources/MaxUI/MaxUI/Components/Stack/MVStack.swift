@@ -49,6 +49,20 @@ public struct MVStack: Componentable {
 public final class VStackView: UIStackView {
     private var appearance: MStackView.Appearance?
     private var cancellables = Set<AnyCancellable>()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupLayout()
+    }
+
+    required init(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    convenience init() {
+        self.init(frame: .zero)
+        setupLayout()
+    }
 }
 
 extension VStackView: ReusableView {
@@ -76,7 +90,6 @@ extension VStackView {
     private func updateAppearance(appearance: MStackView.Appearance) {
         guard appearance != self.appearance else { return }
 
-        axis = .vertical
         alignment = appearance.alignment
         spacing = appearance.spacing
         distribution = appearance.distribution
@@ -84,6 +97,10 @@ extension VStackView {
         updateCommon(with: appearance.common)
 
         self.appearance = appearance
+    }
+    
+    private func setupLayout() {
+        axis = .vertical
     }
 }
 

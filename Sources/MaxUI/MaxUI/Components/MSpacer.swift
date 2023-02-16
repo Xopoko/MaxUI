@@ -85,6 +85,7 @@ public struct MSpacer: Componentable {
 }
 
 public final class MSpacerView: UIView {
+    private var model: MSpacer?
     private var heightConstraint: NSLayoutConstraint?
     private var widthConstraint: NSLayoutConstraint?
 }
@@ -95,6 +96,8 @@ extension MSpacerView: ReusableView {
     /// - Parameter data: this is an object that implements the Componentable protocol and contains
     ///   the ViewType of the view in which this function is called
     public func configure(with data: MSpacer) {
+        self.model = data
+        
         heightConstraint.map { removeConstraint($0) }
         widthConstraint.map { removeConstraint($0) }
 
@@ -132,5 +135,16 @@ extension MSpacerView: ReusableView {
         setContentHuggingPriority(.init(.zero), for: .vertical)
         setContentCompressionResistancePriority(.required, for: .horizontal)
         setContentCompressionResistancePriority(.required, for: .vertical)
+    }
+}
+
+extension MSpacerView: Spaceable {
+    var isReadyToBeSpaceable: Bool {
+        model?.height == nil &&
+        model?.width == nil &&
+        model?.heightLessOrEqual == nil &&
+        model?.widthLessOrEqual == nil &&
+        model?.heightGreaterOrEqual == nil &&
+        model?.widthGreaterOrEqual == nil
     }
 }
