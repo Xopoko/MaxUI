@@ -1,7 +1,9 @@
 import UIKit
 
 extension UIStackView {
-
+    /// Configures the UIStackView with the given models
+    ///
+    /// - Parameter models: The MView models to be added to the stack view.
     public func configure(models: [MView]) {
         if models.isPossibleToReuse(with: arrangedSubviews) {
             models.reuse(with: arrangedSubviews)
@@ -16,6 +18,10 @@ extension UIStackView {
         }
     }
 
+    /// Adds the given `data` as an arranged subview of the UIStackView.
+    ///
+    /// - Parameter data: The `ViewModelProtocol` to be added as an arranged subview.
+    /// - Returns: The `UIView` instance created from the `data`.
     @discardableResult
     public func addArranged(with data: ViewModelProtocol) -> UIView {
         let view = data.createAssociatedViewInstance()
@@ -23,6 +29,7 @@ extension UIStackView {
         return view
     }
 
+    /// Removes all the arranged subviews from the UIStackView.
     public func removeArrangedSubviews() {
         arrangedSubviews.forEach { $0.removeFromSuperview() }
     }

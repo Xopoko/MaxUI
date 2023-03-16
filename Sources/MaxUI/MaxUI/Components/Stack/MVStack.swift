@@ -29,10 +29,10 @@ public struct MVStack: Componentable {
     fileprivate let _appearance: CurrentValueSubject<MStackView.Appearance, Never>
     fileprivate let _models: CurrentValueSubject<[MView], Never>
 
-    /// Initializes the `MVStack` with a `MView` builder (`StackViewBuilder`).
+    /// Initializes the `MVStack` with a `MView` builder (`MViewBuilder`).
     ///
     /// - Parameter builder: The `MView` builder.
-    public init(@StackViewBuilder _ builder: () -> [MView]) {
+    public init(@MViewBuilder _ builder: () -> [MView]) {
         self._models = .init(builder())
         self._appearance = .init(MStackView.Appearance())
     }

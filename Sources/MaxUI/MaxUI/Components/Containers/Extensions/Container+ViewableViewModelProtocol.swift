@@ -1,5 +1,4 @@
 import UIKit
-// swiftlint: disable file_length
 public extension MView {
     /// Wraps a `MView` instance to a `Container`
     ///
@@ -173,8 +172,8 @@ extension MView {
     /// - Returns: The updated `MView` instance.
     @discardableResult
     public func size(height: CGFloat, width: CGFloat) -> MView {
-        let update = updateContainer(\.layout.height, setTo: height)
-        return update.updateContainer(\.layout.width, setTo: width)
+        updateContainer(\.layout.height, setTo: height)
+        .updateContainer(\.layout.width, setTo: width)
     }
 
     /// Sets both the height and width of the `Container` layout to
@@ -185,8 +184,8 @@ extension MView {
     /// - Returns: The updated `MView` instance.
     @discardableResult
     public func size(_ size: CGSize) -> MView {
-        let update = updateContainer(\.layout.height, setTo: size.height)
-        return update.updateContainer(\.layout.width, setTo: size.width)
+        updateContainer(\.layout.height, setTo: size.height)
+        .updateContainer(\.layout.width, setTo: size.width)
     }
 
     /// Sets both the height and width of the `Container` layout to
@@ -197,8 +196,8 @@ extension MView {
     /// - Returns: The updated `MView` instance.
     @discardableResult
     public func size(squared: CGFloat) -> MView {
-        let update = updateContainer(\.layout.height, setTo: squared)
-        return update.updateContainer(\.layout.width, setTo: squared)
+        updateContainer(\.layout.height, setTo: squared)
+        .updateContainer(\.layout.width, setTo: squared)
     }
 
     /// Sets the center Y position for a `MView`.
@@ -274,11 +273,15 @@ extension MView {
     /// Sets the corner radius for a `MView`.
     /// Wraps a `MView` in a new `Container` or changes an existing one.
     ///
-    /// - Parameter cornerRadius: The corner radius value to set.
+    /// - Parameters:
+    ///     - cornerRadius: The corner radius value to set.
+    ///     - masksToBounds: The value to set for the `masksToBounds` property. Default is `true`.
+    ///
     /// - Returns: The updated `MView` instance.
     @discardableResult
-    public func cornerRadius(_ cornerRadius: CGFloat) -> MView {
+    public func cornerRadius(_ cornerRadius: CGFloat, masksToBounds: Bool = true) -> MView {
         updateContainer(\.layer.cornerRadius, setTo: cornerRadius)
+        .updateContainer(\.layer.masksToBounds, setTo: masksToBounds)
     }
 
     /// Sets the corners to round for a `MView`.

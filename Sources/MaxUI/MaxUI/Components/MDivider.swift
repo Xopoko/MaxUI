@@ -32,13 +32,15 @@ public final class MDividerView: UIView {
         super.draw(rect)
 
         let thickness = appearance?.thickness ?? 1 / UIScreen.main.scale
+        let leadingInset = appearance?.leadingInset ?? 0
+        let trailingInset = appearance?.trailingInset ?? 0
         let yPosition = (rect.height / 2) - (thickness / 2)
         
         appearance?.color.setStroke()
         
         path.lineWidth = thickness
-        path.move(to: CGPoint(x: 0, y: yPosition))
-        path.addLine(to: CGPoint(x: rect.width, y: yPosition))
+        path.move(to: CGPoint(x: leadingInset, y: yPosition))
+        path.addLine(to: CGPoint(x: rect.width - trailingInset, y: yPosition))
         path.stroke()
     }
        
@@ -72,13 +74,19 @@ extension MDividerView {
     public struct Appearance: Equatable {
         public var color: UIColor
         public var thickness: CGFloat
+        public var leadingInset: CGFloat
+        public var trailingInset: CGFloat
 
         public init(
             color: UIColor = .systemGray,
-            thickness: CGFloat = 1 / UIScreen.main.scale
+            thickness: CGFloat = 1 / UIScreen.main.scale,
+            leadingInset: CGFloat = 0,
+            trailingInset: CGFloat = 0
         ) {
             self.color = color
             self.thickness = thickness
+            self.leadingInset = leadingInset
+            self.trailingInset = trailingInset
         }
     }
 }

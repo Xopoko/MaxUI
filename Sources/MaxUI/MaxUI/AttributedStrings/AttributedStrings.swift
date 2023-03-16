@@ -1,10 +1,22 @@
-// swiftlint: disable file_length
 import UIKit
 
 extension String {
     @discardableResult
+    public func attributedString() -> NSAttributedString {
+        NSAttributedString(string: self)
+    }
+    
+    @discardableResult
     public func font(_ font: UIFont) -> NSAttributedString {
         NSAttributedString(string: self, attributes: [.font: font])
+    }
+    
+    @discardableResult
+    public func font(_ font: UIFont, forSubstring substring: String) -> NSAttributedString {
+        let range = (self as NSString).range(of: substring)
+        let mutableAttributedString = NSMutableAttributedString(string: self)
+        mutableAttributedString.addAttributes([.font: font], range: range)
+        return mutableAttributedString
     }
 
     @discardableResult

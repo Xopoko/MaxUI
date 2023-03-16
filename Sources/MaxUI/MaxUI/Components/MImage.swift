@@ -4,28 +4,25 @@ import Combine
 /// Represents a component for displaying an image
 public struct MImage: Componentable {
     public typealias ViewType = MImageView
-
+    
     /// The image to display in the `MImageView`.
-    public var image: ImageSettable? {
-        get { _image.value }
-        nonmutating set { _image.send(newValue) }
-    }
+    @MBinding
+    public var image: ImageSettable?
 
     /// The appearance of the `MImageView`.
-    public var appearance: MImageView.Appearance {
-        get { _appearance.value }
-        nonmutating set { _appearance.send(newValue) }
-    }
-
-    fileprivate let _appearance: CurrentValueSubject<MImageView.Appearance, Never>
-    fileprivate let _image: CurrentValueSubject<ImageSettable?, Never>
+    @MBinding
+    public var appearance: MImageView.Appearance
 
     /// Initializes a new `MImage` component with the specified image.
     ///
     /// - Parameter image: The image to display in the `MImageView`.
     public init(_ image: ImageSettable?) {
-        self._image = .init(image)
-        self._appearance = .init(MImageView.Appearance())
+        self.init(.dynamic(image))
+    }
+    
+    public init(_ image: MBinding<ImageSettable?>) {
+        self._image = image
+        self._appearance = .dynamic(MImageView.Appearance())
     }
 }
 
@@ -48,7 +45,7 @@ public final class MImageView: UIImageView {
 
 extension MImageView: ReusableView {
     public func configure(with data: MImage) {
-        data._image
+        data.$image.publisher
             .sink { [weak self] image in
                 guard let self else { return }
 
@@ -56,7 +53,7 @@ extension MImageView: ReusableView {
             }
             .store(in: &cancellables)
 
-        data._appearance
+        data.$appearance.publisher
             .sink { [weak self] appearance in
                 self?.updateAppearance(appearance: appearance)
             }
@@ -72,8 +69,9 @@ extension MImageView: ReusableView {
 extension MImageView {
     private func updateAppearance(appearance: Appearance) {
         guard appearance != self.appearance else { return }
-
+        
         tintColor = appearance.tintColor
+        
         updateCommon(with: appearance.common)
 
         self.appearance = appearance
@@ -83,10 +81,22 @@ extension MImageView {
 // MARK: - Appearance
 extension MImageView {
     public struct Appearance: Equatable, Withable {
-        var layer = SharedAppearance.Layer()
-        var common = SharedAppearance.Common().with(\.contentMode, setTo: .scaleAspectFit)
-        var isRounded = false
-        var tintColor: UIColor?
+        public var layer: SharedAppearance.Layer
+        public var common: SharedAppearance.Common
+        public var isRounded: Bool
+        public var tintColor: UIColor?
+        
+        public init(
+            layer: SharedAppearance.Layer = SharedAppearance.Layer(),
+            common: SharedAppearance.Common = SharedAppearance.Common(contentMode: .scaleAspectFit),
+            isRounded: Bool = false,
+            tintColor: UIColor? = nil
+        ) {
+            self.layer = layer
+            self.common = common
+            self.isRounded = isRounded
+            self.tintColor = tintColor
+        }
     }
 }
 

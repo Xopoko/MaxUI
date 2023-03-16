@@ -147,6 +147,8 @@ extension MScrollViewView {
         contentInset = appearance.contentInsets
         showsVerticalScrollIndicator = appearance.showsVerticalScrollIndicator
         showsHorizontalScrollIndicator = appearance.showsHorizontalScrollIndicator
+        alwaysBounceVertical = appearance.alwaysBounceVertical
+        alwaysBounceHorizontal = appearance.alwaysBounceHorizontal
 
         self.appearance = appearance
     }
@@ -164,19 +166,25 @@ extension MScrollView {
         public var contentInsets: UIEdgeInsets
         public var showsVerticalScrollIndicator: Bool
         public var showsHorizontalScrollIndicator: Bool
+        public var alwaysBounceVertical: Bool
+        public var alwaysBounceHorizontal: Bool
 
         public init(
             axis: NSLayoutConstraint.Axis = .vertical,
             distribution: Distribution = .fill(insets: .zero),
             contentInsets: UIEdgeInsets = .zero,
             showsVerticalScrollIndicator: Bool = false,
-            showsHorizontalScrollIndicator: Bool = false
+            showsHorizontalScrollIndicator: Bool = false,
+            alwaysBounceVertical: Bool = false,
+            alwaysBounceHorizontal: Bool = false
         ) {
             self.axis = axis
             self.distribution = distribution
             self.contentInsets = contentInsets
             self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
             self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
+            self.alwaysBounceVertical = alwaysBounceVertical
+            self.alwaysBounceHorizontal = alwaysBounceHorizontal
         }
     }
 }
@@ -193,6 +201,7 @@ extension MScrollView: Scrollable {
     ///
     /// - Parameter axis: The new axis to set.
     /// - Returns: The updated scrollable instance.
+    @discardableResult
     public func axis(_ axis: NSLayoutConstraint.Axis) -> MScrollView {
         scrollViewAppearance?.axis = axis
         return self
@@ -202,6 +211,7 @@ extension MScrollView: Scrollable {
     ///
     /// - Parameter distribution: The new distribution to set.
     /// - Returns: The updated scrollable instance.
+    @discardableResult
     public func distribution(_ distribution: Appearance.Distribution) -> MScrollView {
         scrollViewAppearance?.distribution = distribution
         return self
@@ -211,6 +221,7 @@ extension MScrollView: Scrollable {
     ///
     /// - Parameter contentInsets: The new content insets to set.
     /// - Returns: The updated scrollable instance.
+    @discardableResult
     public func contentInsets(_ contentInsets: UIEdgeInsets) -> MScrollView {
         scrollViewAppearance?.contentInsets = contentInsets
         return self
@@ -220,6 +231,7 @@ extension MScrollView: Scrollable {
     ///
     /// - Parameter showsVerticalScrollIndicator: A boolean value indicating whether to show the vertical scroll indicator.
     /// - Returns: The updated scrollable instance.
+    @discardableResult
     public func showsVerticalScrollIndicator(_ showsVerticalScrollIndicator: Bool) -> MScrollView {
         scrollViewAppearance?.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         return self
@@ -229,6 +241,7 @@ extension MScrollView: Scrollable {
     ///
     /// - Parameter showsHorizontalScrollIndicator: A boolean value indicating whether to show the horizontal scroll indicator.
     /// - Returns: The updated scrollable instance.
+    @discardableResult
     public func showsHorizontalScrollIndicator(
         _ showsHorizontalScrollIndicator: Bool
     ) -> MScrollView {
@@ -240,6 +253,7 @@ extension MScrollView: Scrollable {
     ///
     /// - Parameter showsScrollIndicators: A boolean value indicating whether to show the scroll indicators.
     /// - Returns: The updated scrollable instance.
+    @discardableResult
     public func showsScrollIndicators(
         _ showsScrollIndicators: Bool
     ) -> MScrollView {
@@ -248,10 +262,35 @@ extension MScrollView: Scrollable {
         return self
     }
 
+    /// Enables the scroll vertical bouncing.
+    ///
+    /// - Parameter alwaysBounceVertical: A boolean value indicating whether to enable the scroll vertical bouncing.
+    /// - Returns: The updated scrollable instance.
+    @discardableResult
+    public func alwaysBounceVertical(
+        _ alwaysBounceVertical: Bool
+    ) -> MScrollView {
+        scrollViewAppearance?.alwaysBounceVertical = alwaysBounceVertical
+        return self
+    }
+
+    /// Enables the scroll horizontal bouncing.
+    ///
+    /// - Parameter alwaysBounceHorizontal: A boolean value indicating whether to enable the scroll horizontal bouncing.
+    /// - Returns: The updated scrollable instance.
+    @discardableResult
+    public func alwaysBounceHorizontal(
+        _ alwaysBounceHorizontal: Bool
+    ) -> MScrollView {
+        scrollViewAppearance?.alwaysBounceHorizontal = alwaysBounceHorizontal
+        return self
+    }
+
     /// Adds a refresh control to the scroll view.
     ///
     /// - Parameter refreshControl: The refresh control to add.
     /// - Returns: The updated scroll view instance.
+    @discardableResult
     public func refreshControl(
         _ refreshControl: UIRefreshControl
     ) -> MScrollView {
@@ -261,6 +300,7 @@ extension MScrollView: Scrollable {
 }
 
 extension MScrollView: Stylable {
+    @discardableResult
     public func style(_ appearance: MScrollView.Appearance) -> Self {
         scrollViewAppearance = appearance
         return self

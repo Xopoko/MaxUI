@@ -4,8 +4,22 @@ import UIKit
 open class TapableView: UIControl {
 
     public enum HighlightBehavior: Equatable {
+        public static func == (lhs: HighlightBehavior, rhs: HighlightBehavior) -> Bool {
+            switch (lhs, rhs) {
+            case (.scale, .scale),
+                 (.alpha, .alpha),
+                 (.none, .none):
+                return true
+            case (.custom, .custom):
+                return false
+            default:
+                return false
+            }
+        }
+        
         case scale
         case alpha
+        case custom((_ isHighlighted: Bool) -> Void)
         case none
     }
 
@@ -27,6 +41,10 @@ open class TapableView: UIControl {
                 Animation.default.run(.quick) { [weak self] in
                     guard let self = self else { return }
                     self.alpha = self.isHighlighted ? 0.5 : 1
+                }
+            case .custom(let animations):
+                Animation.default.run(.quick) {
+                    animations(self.isHighlighted)
                 }
             case .none:
                 break

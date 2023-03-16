@@ -41,6 +41,12 @@ public struct MButton: Componentable {
         get { _action.value }
         nonmutating set { _action.send(newValue) }
     }
+    
+    /// The action to be performed when the button is tapped.
+    public var animations: ((MButtonView) -> Void)? {
+        get { _animations.value }
+        nonmutating set { _animations.send(newValue) }
+    }
 
     /// The appearance of the button.
     public var appearance: MButtonView.Appearance {
@@ -50,6 +56,7 @@ public struct MButton: Componentable {
 
     fileprivate let _title: CurrentValueSubject<String?, Never>
     fileprivate let _action: CurrentValueSubject<(() -> Void)?, Never>
+    fileprivate let _animations: CurrentValueSubject<((MButtonView) -> Void)?, Never>
     fileprivate let _appearance: CurrentValueSubject<MButtonView.Appearance, Never>
     fileprivate let _label: CurrentValueSubject<MView?, Never>
 
@@ -66,6 +73,7 @@ public struct MButton: Componentable {
         self._label = .init(nil)
         self._appearance = .init(MButtonView.Appearance())
         self._action = .init(action)
+        self._animations = .init(nil)
     }
 
     /// Initializes a new button component with an action and a label.
@@ -81,6 +89,7 @@ public struct MButton: Componentable {
         self._label = .init(label())
         self._appearance = .init(MButtonView.Appearance())
         self._action = .init(action)
+        self._animations = .init(nil)
     }
 }
 
@@ -89,9 +98,16 @@ public final class MButtonView: TapableView {
     private var container: Container?
     private var appearance: Appearance?
     private var cancellables = Set<AnyCancellable>()
-
+    private var animations: ((MButtonView) -> Void)?
+    
     override public var tapAreaInset: UIEdgeInsets {
         appearance?.tapAreaInset ?? .zero
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        animations?(self)
     }
 }
 
@@ -132,6 +148,16 @@ extension MButtonView: ReusableView {
         data._action
             .assign(to: \.didSelect, on: self)
             .store(in: &cancellables)
+        
+        data._animations
+            .sink { [weak self] animations in
+                guard let self else { return }
+                
+                self.animations = animations
+                
+                animations?(self)
+            }
+            .store(in: &cancellables)
 
         data._appearance
             .sink { [weak self] appearance in
@@ -154,10 +180,13 @@ extension MButtonView {
     private func updateAppearance(appearance: Appearance) {
         guard appearance != self.appearance else { return }
 
-        highlightBehavior = appearance.highlightBehavior
+        if let highlightBehavior = appearance.highlightBehavior {
+            self.highlightBehavior = highlightBehavior
+        }
         isEnabled = appearance.isEnabled
         text?.textAppearance = appearance.textAppearance
         container?.containerAppearance = appearance.containerAppearance
+        isUserInteractionEnabled = appearance.isUserInteractionEnabled
         self.appearance = appearance
     }
 }
@@ -168,23 +197,26 @@ extension MButtonView {
         public var textAppearance: MTextView.Appearance
         public var containerAppearance: ContainerView.Appearance
         public var isEnabled: Bool
-        public var highlightBehavior: TapableView.HighlightBehavior
+        public var highlightBehavior: TapableView.HighlightBehavior?
         public var tapAreaInset: UIEdgeInsets
-
+        public var isUserInteractionEnabled: Bool
+        
         public init(
             textAppearance: MTextView.Appearance = MTextView.Appearance(textAligment: .center),
             containerAppearance: ContainerView.Appearance = ContainerView.Appearance(
                 common: .init(isUserInteractionEnabled: false)
             ),
             isEnabled: Bool = true,
-            highlightBehavior: TapableView.HighlightBehavior = .scale,
-            tapAreaInset: UIEdgeInsets = .zero
+            highlightBehavior: TapableView.HighlightBehavior? = .scale,
+            tapAreaInset: UIEdgeInsets = .zero,
+            isUserInteractionEnabled: Bool = true
         ) {
             self.textAppearance = textAppearance
             self.containerAppearance = containerAppearance
             self.isEnabled = isEnabled
             self.highlightBehavior = highlightBehavior
             self.tapAreaInset = tapAreaInset
+            self.isUserInteractionEnabled = isUserInteractionEnabled
         }
     }
 }
@@ -238,6 +270,7 @@ extension MButton: Textable, Containerable {
 }
 
 extension MButton: Stylable {
+    @discardableResult
     public func style(_ appearance: MButtonView.Appearance) -> Self {
         self.appearance = appearance
         return self

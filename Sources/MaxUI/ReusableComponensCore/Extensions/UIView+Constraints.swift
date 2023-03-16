@@ -20,7 +20,6 @@ extension UIView {
         }
     }
 
-    // swiftlint: disable cyclomatic_complexity function_body_length
     private func fill(
         side: MaximUISides,
         with layout: SharedAppearance.Layout,

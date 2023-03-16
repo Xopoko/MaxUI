@@ -1,7 +1,7 @@
 import UIKit
 
-enum Animation {
-    enum Duration {
+public enum Animation {
+    public enum Duration {
         /// `0.0`
         case none
         /// `0.1`
@@ -15,11 +15,11 @@ enum Animation {
         case custom(_ duration: TimeInterval)
 
         /// Convenient way to run or ignore animation withing one line of code.
-        subscript(_ enabled: Bool) -> Duration {
+        public subscript(_ enabled: Bool) -> Duration {
             return enabled ? self : .none
         }
 
-        var value: TimeInterval {
+        public var value: TimeInterval {
             switch self {
             case .none: return 0
             case .quick: return 0.1
@@ -31,7 +31,7 @@ enum Animation {
         }
     }
 
-    enum Action {
+    public enum Action {
         case `default`
         case start
         case end
@@ -44,7 +44,7 @@ enum Animation {
 }
 
 // MARK: - Public Functions
-extension Animation {
+public extension Animation {
 
     func run(
         _ duration: Duration = .default,
@@ -91,7 +91,7 @@ extension Animation {
 }
 
 // MARK: - Animation.Action Extension
-extension Animation.Action {
+public extension Animation.Action {
     func options(forAnimation animation: Animation) -> UIView.AnimationOptions {
         var options: UIView.AnimationOptions = {
             switch self {

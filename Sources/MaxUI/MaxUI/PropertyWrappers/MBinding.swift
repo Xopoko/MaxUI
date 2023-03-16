@@ -75,10 +75,10 @@ public struct MBinding<Value> {
         )
     }
 
-    /// Accesses the value of a `KeyPath` in the wrapped value.
+    /// Accesses the value of a `WritableKeyPath` in the wrapped value.
     ///
     /// - Parameters:
-    ///   - keyPath: The `KeyPath` to access the value.
+    ///   - keyPath: The `WritableKeyPath` to access the value.
     public subscript<Subject>(
         dynamicMember keyPath: WritableKeyPath<Value, Subject>
     ) -> MBinding<Subject> {
@@ -94,7 +94,23 @@ public struct MBinding<Value> {
                 .eraseToAnyPublisher()
         )
     }
-
+    
+    /// Accesses the value of a `KeyPath` in the wrapped value.
+    ///
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` to access the value.
+    public subscript<Subject>(
+        dynamicMember keyPath: KeyPath<Value, Subject>
+    ) -> MBinding<Subject> {
+        MBinding<Subject>.init(
+            get: { self.get()[keyPath: keyPath] },
+            set: { _ in },
+            publisher: self.publisher
+                .map { $0[keyPath: keyPath] }
+                .eraseToAnyPublisher()
+        )
+    }
+    
     /*
         Backward compatibility initializer, it allows to change @Bidding value without
         using @MState as 'parent'.
@@ -156,6 +172,16 @@ extension MBinding {
             set: { newValue in base.set(newValue) },
             publisher: base.publisher
                 .compactMap { $0 }
+                .eraseToAnyPublisher()
+        )
+    }
+    
+    public func map<Subject>(_ map: @escaping (Value) -> Subject) -> MBinding<Subject> {
+        MBinding<Subject>.init(
+            get: { map(self.get()) },
+            set: { _ in },
+            publisher: publisher
+                .map { map($0) }
                 .eraseToAnyPublisher()
         )
     }

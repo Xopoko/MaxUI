@@ -33,9 +33,9 @@ public struct TapableContainer: Componentable {
     }
 
     /// Appearance of tapable container
-    public var appearance: TapableContainerView.Appearance? {
+    public var appearance: TapableContainerView.Appearance {
         get { _appearance.value }
-        nonmutating set { if let newValue { _appearance.send(newValue) } }
+        nonmutating set { _appearance.send(newValue) }
     }
 
     /// Handles the tap event
@@ -133,12 +133,20 @@ extension TapableContainerView {
 }
 
 extension TapableContainer: Stylable {
-    public func style(_ appearance: TapableContainerView.Appearance) -> TapableContainer {
+    @discardableResult
+    public func highlightBehavior(_ highlightBehavior: TapableView.HighlightBehavior) -> Self {
+        self.appearance.highlightBehavior = highlightBehavior
+        return self
+    }
+    
+    @discardableResult
+    public func style(_ appearance: TapableContainerView.Appearance) -> Self {
         self.appearance = appearance
         return self
     }
 
-    public func onSelect(_ action: @escaping () -> Void) -> TapableContainer {
+    @discardableResult
+    public func onSelect(_ action: @escaping () -> Void) -> Self {
         self.action = action
         return self
     }

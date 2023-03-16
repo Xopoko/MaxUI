@@ -1,5 +1,5 @@
 @resultBuilder
-public enum StackViewBuilder {
+public enum MViewBuilder {
     public typealias Component = [MView]
     public typealias Expression = MView
 

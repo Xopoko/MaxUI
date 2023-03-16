@@ -29,15 +29,14 @@ extension Array where Element == any MView {
     /// - Parameter subviews: The subviews to check for reuse.
     /// - Returns: A Boolean indicating whether it is possible to reuse the subviews.
     public func isPossibleToReuse(with subviews: [UIView]) -> Bool {
-        var canReuse = subviews.count == self.count
+        let canReuse = subviews.count == self.count
         if canReuse {
             for (index, viewModel) in self.enumerated() {
                 guard
                     let view = subviews[safe: index],
                     type(of: view) == viewModel.view
                 else {
-                    canReuse = false
-                    break
+                    return false
                 }
             }
         }

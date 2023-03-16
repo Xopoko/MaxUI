@@ -81,10 +81,10 @@ public struct MZStack: Componentable {
         self._models = .init(builder())
     }
 
-    /// Initializes the `MZStack` with a `MView` builder (`StackViewBuilder`).
+    /// Initializes the `MZStack` with a `MView` builder (`MViewBuilder`).
     ///
     /// - Parameter builder: The `MView` builder.
-    public init(@StackViewBuilder _ builder: () -> [MView]) {
+    public init(@MViewBuilder _ builder: () -> [MView]) {
         let models = builder().map { view in LayoutModel({ view }, customLayout: nil) }
         self._models = .init(models)
     }
