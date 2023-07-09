@@ -8,7 +8,8 @@
 import MaxUI
 
 class TextExampleViewController: UIViewController {
-    @MaxUI.MState var stateExample: String = ""
+    @MState
+    var stateExample: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +21,7 @@ class TextExampleViewController: UIViewController {
                 MText("This is a text with several modifiers")
                     .font(.systemFont(ofSize: 20, weight: .light))
                     .textColor(.lightGray)
-                    .textAligment(.right)
+                    .textAlignment(.right)
                     .numberOfLines(1)
                     .adjustsFontSizeToFitWidth(true)
                 MDivider()
@@ -28,12 +29,12 @@ class TextExampleViewController: UIViewController {
                     .multiline()
                 MDivider()
                 MText("Let's try to use")
-                    .textAligment(.center)
+                    .textAlignment(.center)
                 MText("@MState")
-                    .textAligment(.center)
+                    .textAlignment(.center)
                     .font(.systemFont(ofSize: 16, weight: .bold))
                 MText("(just tap on this text)")
-                    .textAligment(.center)
+                    .textAlignment(.center)
                     .textColor(.systemBlue)
                     .borderWidth(1)
                     .borderColor(.systemBlue)
@@ -43,7 +44,7 @@ class TextExampleViewController: UIViewController {
                         self?.stateExample = "\(String(UnicodeScalar(Array(0x1F300...0x1F3F0).randomElement()!)!))"
                     }
                 MText($stateExample)
-                    .textAligment(.center)
+                    .textAlignment(.center)
                     .font(.systemFont(ofSize: 40, weight: .bold))
                 
                 MDivider()

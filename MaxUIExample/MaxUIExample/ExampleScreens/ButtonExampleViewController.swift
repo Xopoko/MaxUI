@@ -33,7 +33,7 @@ class ButtonExampleViewController: UIViewController {
                         MHStack {
                             MSpacer()
                             MText("🎉")
-                            MText("Hello, comrads")
+                            MText("Hello, comrades")
                                 .textColor(.white)
                                 .font(.systemFont(ofSize: 20, weight: .semibold))
                             MImage(UIImage(systemName: "brain.head.profile"))
@@ -44,7 +44,7 @@ class ButtonExampleViewController: UIViewController {
                     }
                     .height(44)
                     .gradient(
-                        layer: .init(cornerRadius: 8, masksToBounds: true),
+                        layer: .init(cornerRadius: .constant(8), masksToBounds: .constant(true)),
                         colors: [
                             UIColor(red: 0.00, green: 0.86, blue: 0.87, alpha: 1.00),
                             UIColor(red: 0.99, green: 0.00, blue: 1.00, alpha: 1.00)
@@ -75,12 +75,10 @@ class ButtonExampleViewController: UIViewController {
                     .toContainer()
                     .insets(horizontal: 24)
                 }
-                
-             
             }
             .spacing(10)
         }
-        .configure(in: view, safeArea: true)
+        .configure(in: view)
     }
     
     private func containerForExample(_ explanation: String, _ builder: () -> MView) -> MView {
