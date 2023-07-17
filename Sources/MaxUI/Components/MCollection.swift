@@ -41,6 +41,7 @@ public class MCollectionView: UIView, ReusableView {
                 let cells: [CollectionItemViewModelProtocol] = $0
                 self?.collectionDataSource.update(sections: cells.toSections())
                 self?.collectionView.reloadData()
+                self?.collectionView.performBatchUpdates {}
             }
             .store(in: &cancellables)
         
