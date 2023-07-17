@@ -67,6 +67,12 @@ public class MCollectionView: UIView, ReusableView {
                 .weakAssign(to: \.keyboardDismissMode, on: collectionView)
             appearance.refreshControl?.publisher
                 .weakAssign(to: \.refreshControl, on: collectionView)
+            appearance.dataConsumingTreshold?.publisher
+                .sink(receiveValue: { [weak self] treshold in
+                    self?.collectionDataSource.trackDataConsumed(treshold: treshold) {
+                        appearance.trackDataConsumedCallback?()
+                    }
+                })
         }
     }
 }
@@ -80,7 +86,9 @@ extension MCollectionView {
         public var collectionViewLayout: MBinding<UICollectionViewLayout>?
         public var keyboardDismissMode: MBinding<UIScrollView.KeyboardDismissMode>?
         public var refreshControl: MBinding<UIRefreshControl?>?
-
+        public var dataConsumingTreshold: MBinding<Int>?
+        fileprivate var trackDataConsumedCallback: (() -> Void)?
+        
         public init(
             contentInset: MBinding<UIEdgeInsets>? = nil,
             scrollIndicatorInsets: MBinding<UIEdgeInsets>? = nil,
@@ -88,7 +96,8 @@ extension MCollectionView {
             showsHorizontalScrollIndicator: MBinding<Bool>? = nil,
             collectionViewLayout: MBinding<UICollectionViewLayout>? = nil,
             refreshControl: MBinding<UIRefreshControl?>? = nil,
-            keyboardDismissMode: MBinding<UIScrollView.KeyboardDismissMode>? = nil
+            keyboardDismissMode: MBinding<UIScrollView.KeyboardDismissMode>? = nil,
+            dataConsumingTreshold: MBinding<Int>? = nil
         ) {
             self.contentInset = contentInset
             self.scrollIndicatorInsets = scrollIndicatorInsets
@@ -97,6 +106,7 @@ extension MCollectionView {
             self.refreshControl = refreshControl
             self.collectionViewLayout = collectionViewLayout
             self.keyboardDismissMode = keyboardDismissMode
+            self.dataConsumingTreshold = dataConsumingTreshold
         }
     }
 }
@@ -228,6 +238,16 @@ extension MCollection {
     public func refreshControl(_ refreshControl: UIRefreshControl?) -> Self {
         with(\.appearance.refreshControl, setTo: .constant(refreshControl))
     }
+    
+    /// Adds a refresh control to the scroll view.
+    ///
+    /// - Parameter refreshControl: The refresh control to add.
+    /// - Returns: The updated scroll view instance.
+    @discardableResult
+    public func trackDataConsumed(treshold: Int, _ callback: @escaping () -> Void) -> Self {
+        with(\.appearance.trackDataConsumedCallback, setTo: callback)
+        .with(\.appearance.dataConsumingTreshold, setTo: .constant(treshold))
+    }
 }
 
 #if DEBUG
@@ -238,10 +258,13 @@ struct MCollection_Previews: PreviewProvider {
     
     static var previews: some View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            items = Array(repeating: MText("Hello"), count: 20)
+            items = Array(repeating: MText("Hello"), count: 200)
         }
         return ComponentPreview(distribution: .fill) {
             MCollection($items)
+                .trackDataConsumed(treshold: 20) {
+                    print("consuming")
+                }
         }
     }
 }

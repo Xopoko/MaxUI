@@ -15,7 +15,8 @@ protocol DeclarativeCommon: MView,
                             DeclarativeBorderWidth,
                             DeclarativeBorderColor,
                             DeclarativeShadow,
-                            DeclarativeMasksToBounds {}
+                            DeclarativeMasksToBounds,
+                            DeclarativeGestureRecognizers{}
 
 protocol DeclarativeIsUserInteractionEnabled: MView {
     var isUserInteractionEnabled: MBinding<Bool>? { get set }
@@ -81,6 +82,11 @@ protocol DeclarativeShadow: MView {
 protocol DeclarativeMasksToBounds: MView {
     var masksToBounds: MBinding<Bool>? { get set }
     func masksToBounds(_ masksToBounds: MBinding<Bool>) -> Self
+}
+
+protocol DeclarativeGestureRecognizers: MView {
+    var gestureRecognizers: MBinding<[UIGestureRecognizer]?>? { get set }
+    func gestureRecognizers(_ gestureRecognizers: MBinding<[UIGestureRecognizer]?>) -> Self
 }
 
 extension UIView {
@@ -203,6 +209,13 @@ extension UIView {
                 .store(in: &cancellables)
         }
         
+        if let gestureRecognizers = (model as? DeclarativeGestureRecognizers)?.gestureRecognizers {
+            gestureRecognizers.publisher
+                .sink { gestureRecognizers in
+                    view?.gestureRecognizers = gestureRecognizers
+                }
+                .store(in: &cancellables)
+        }
     }
 }
 
@@ -271,5 +284,10 @@ extension MView where Self: DeclarativeCommon {
     @discardableResult
     func masksToBounds(_ masksToBounds: MBinding<Bool>) -> Self {
         with(\.masksToBounds, setTo: masksToBounds)
+    }
+    
+    @discardableResult
+    func gestureRecognizers(_ gestureRecognizers: MBinding<[UIGestureRecognizer]?>) -> Self {
+        with(\.gestureRecognizers, setTo: gestureRecognizers)
     }
 }

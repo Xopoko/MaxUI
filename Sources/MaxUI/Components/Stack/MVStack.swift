@@ -39,6 +39,7 @@ public struct MVStack: Componentable, DeclarativeCommon {
     var borderColor: MBinding<UIColor>?
     var shadow: MBinding<SharedAppearance.Layer.Shadow>?
     var masksToBounds: MBinding<Bool>?
+    var gestureRecognizers: MBinding<[UIGestureRecognizer]?>?
     
     /// Initialise the `MVStack` with a `MBinding`
     ///

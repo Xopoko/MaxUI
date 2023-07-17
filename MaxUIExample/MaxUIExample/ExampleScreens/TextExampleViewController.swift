@@ -36,6 +36,7 @@ class TextExampleViewController: UIViewController {
                 MText("(just tap on this text)")
                     .textAlignment(.center)
                     .textColor(.systemBlue)
+                    .toContainer()
                     .borderWidth(1)
                     .borderColor(.systemBlue)
                     .insets(8)
@@ -53,8 +54,6 @@ class TextExampleViewController: UIViewController {
                         .foregroundColor(.systemBlue)
                         .underlineStyle(.single)
                         .underlineColor(.systemBlue)
-                    
-                    " (Please don't touch)"
                 }
                 .onSelect(animation: .alpha) {
                     UIApplication.shared.open(URL(string: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")!)
@@ -94,7 +93,7 @@ class TextExampleViewController: UIViewController {
             .spacing(20)
             .insets(24)
         }
-        .configure(in: view, safeArea: true)
+        .configure(in: view)
     }
 }
 

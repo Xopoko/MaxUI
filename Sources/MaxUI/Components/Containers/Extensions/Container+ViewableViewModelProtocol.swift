@@ -627,6 +627,24 @@ extension MView {
     ) -> TapableContainer {
         toTapableContainer(.init(highlightBehavior: animation), didSelect)
     }
+    
+    @discardableResult
+    public func gestureRecognizers(
+        _ gestureRecognizers: [UIGestureRecognizer]?
+    ) -> MView {
+        self.gestureRecognizers(.constant(gestureRecognizers))
+    }
+    
+    @discardableResult
+    public func gestureRecognizers(
+        _ gestureRecognizers: MBinding<[UIGestureRecognizer]?>
+    ) -> MView {
+        if let declarative = self as? DeclarativeGestureRecognizers {
+            return declarative.gestureRecognizers(gestureRecognizers)
+        } else {
+            return updateContainer(\.common.gestureRecognizers, setTo: gestureRecognizers)
+        }
+    }
 }
 
 // swiftlint:enable file_length
