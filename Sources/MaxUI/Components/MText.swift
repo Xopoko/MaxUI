@@ -27,6 +27,7 @@ public struct MText: Componentable, Textable, DeclarativeCommon {
     var borderColor: MBinding<UIColor>?
     var shadow: MBinding<SharedAppearance.Layer.Shadow>?
     var masksToBounds: MBinding<Bool>?
+    var gestureRecognizers: MBinding<[UIGestureRecognizer]?>?
     
     /// Initialise the component view model with a binding that holds the text value.
     ///

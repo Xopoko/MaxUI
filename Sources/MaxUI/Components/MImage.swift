@@ -26,6 +26,7 @@ public struct MImage: Componentable, DeclarativeCommon {
     var borderColor: MBinding<UIColor>?
     var shadow: MBinding<SharedAppearance.Layer.Shadow>?
     var masksToBounds: MBinding<Bool>?
+    var gestureRecognizers: MBinding<[UIGestureRecognizer]?>?
     
     /// Initializes a new `MImage` component with the specified image.
     ///

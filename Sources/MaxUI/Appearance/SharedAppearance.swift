@@ -209,6 +209,7 @@ public enum SharedAppearance: Equatable, Withable {
         public var clipsToBounds: MBinding<Bool>?
         /// A Boolean value indicating whether the view is hidden.
         public var isHidden: MBinding<Bool>?
+        public var gestureRecognizers: MBinding<[UIGestureRecognizer]?>?
         
         /// Initializes a `Common` structure with the specified properties.
         ///
@@ -225,7 +226,8 @@ public enum SharedAppearance: Equatable, Withable {
             contentMode: MBinding<UIView.ContentMode>? = nil,
             backgroundColor: MBinding<UIColor?>? = nil,
             clipsToBounds: MBinding<Bool>? = nil,
-            isHidden: MBinding<Bool>? = nil
+            isHidden: MBinding<Bool>? = nil,
+            gestureRecognizers: MBinding<[UIGestureRecognizer]?>? = nil
         ) {
             self.isUserInteractionEnabled = isUserInteractionEnabled
             self.alpha = alpha
@@ -233,6 +235,7 @@ public enum SharedAppearance: Equatable, Withable {
             self.backgroundColor = backgroundColor
             self.clipsToBounds = clipsToBounds
             self.isHidden = isHidden
+            self.gestureRecognizers = gestureRecognizers
         }
         
         public static func == (lhs: SharedAppearance.Common, rhs: SharedAppearance.Common) -> Bool {
@@ -241,7 +244,8 @@ public enum SharedAppearance: Equatable, Withable {
             lhs.contentMode?.wrappedValue == rhs.contentMode?.wrappedValue &&
             lhs.backgroundColor?.wrappedValue == rhs.backgroundColor?.wrappedValue &&
             lhs.clipsToBounds?.wrappedValue == rhs.clipsToBounds?.wrappedValue &&
-            lhs.isHidden?.wrappedValue == rhs.isHidden?.wrappedValue
+            lhs.isHidden?.wrappedValue == rhs.isHidden?.wrappedValue &&
+            lhs.gestureRecognizers?.wrappedValue == rhs.gestureRecognizers?.wrappedValue
         }
     }
 }
@@ -380,6 +384,8 @@ extension UIView {
                 .weakAssign(to: \.clipsToBounds, on: self)
             common.isHidden?.publisher
                 .weakAssign(to: \.isHidden, on: self)
+            common.gestureRecognizers?.publisher
+                .weakAssign(to: \.gestureRecognizers, on: self)
         }
     }
 }
