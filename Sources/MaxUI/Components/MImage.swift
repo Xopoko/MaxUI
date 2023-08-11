@@ -34,10 +34,45 @@ public struct MImage: Componentable, DeclarativeCommon {
     public init(_ image: ImageSettable?) {
         self.init(.dynamic(image))
     }
-    
+
+    /// Initializes a new `MImage` component with the specified binding of `ImageSettable?`.
+    ///
+    /// - Parameter image: A binding to the image to display in the `MImageView`.
     public init(_ image: MBinding<ImageSettable?>) {
         self._image = image
         self._appearance = .dynamic(MImageView.Appearance())
+    }
+
+    /// Initializes a new `MImage` component with the specified binding of `UIImage?`.
+    ///
+    /// This converts `UIImage?` into `ImageSettable?` for initialization.
+    ///
+    /// - Parameter image: A binding to the `UIImage?` to display in the `MImageView`.
+    public init(_ image: MBinding<UIImage?>) {
+        self.init(image.map { $0 as ImageSettable? })
+    }
+
+    /// Initializes a new `MImage` component with the specified binding of `UIImage`.
+    ///
+    /// This converts `UIImage` into `ImageSettable?` for initialization.
+    ///
+    /// - Parameter image: A binding to the `UIImage` to display in the `MImageView`.
+    public init(_ image: MBinding<UIImage>) {
+        self.init(image.map { $0 as ImageSettable? })
+    }
+
+    /// Initializes a new `MImage` component with an image using its asset name.
+    ///
+    /// - Parameter named: The name of the image asset to be used.
+    public init(named: String) {
+        self.init(UIImage(named: named))
+    }
+
+    /// Initializes a new `MImage` component with a system image using its system name.
+    ///
+    /// - Parameter systemName: The name of the system image to be used.
+    public init(systemName: String) {
+        self.init(UIImage(systemName: systemName))
     }
 }
 
