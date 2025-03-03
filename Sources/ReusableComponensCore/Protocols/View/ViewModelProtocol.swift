@@ -12,7 +12,7 @@ extension ViewModelProtocol {
     /*
      * Load UIView instance and fill it with ViewModel
      */
-    func createAssociatedViewInstance() -> UIView {
+    public func createAssociatedViewInstance() -> UIView {
         let view: UIView = view.init()
 
         if let presenting = view as? AnyValueConfigurable {

@@ -1,6 +1,86 @@
 import UIKit
 import Combine
 
+extension MTextView {
+    
+    func setupTapHandling() {
+        isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        addGestureRecognizer(tap)
+    }
+    
+    @objc private func handleTap(gesture: UITapGestureRecognizer) {
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: CGSize(width: bounds.width, height: .greatestFiniteMagnitude))
+        textContainer.widthTracksTextView = true
+        let textStorage = NSTextStorage(string: "")
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+        
+        textContainer.lineBreakMode = lineBreakMode
+        textContainer.lineFragmentPadding = 0
+        textContainer.maximumNumberOfLines = numberOfLines
+        
+        var finalAttributedString: NSAttributedString
+        if let attText = attributedText {
+            let mutableCopy = NSMutableAttributedString(attributedString: attText)
+            let fullRange = NSRange(location: 0, length: mutableCopy.length)
+            
+            // Установка атрибута выравнивания
+            let style = NSMutableParagraphStyle()
+            switch self.textAlignment {
+            case .center:
+                style.alignment = .center
+            case .right:
+                style.alignment = .right
+            case .justified:
+                style.alignment = .justified
+            default:
+                style.alignment = .left
+            }
+            mutableCopy.addAttributes([.paragraphStyle: style], range: fullRange)
+            finalAttributedString = mutableCopy
+        } else {
+            finalAttributedString = NSAttributedString()
+        }
+        
+        textStorage.setAttributedString(finalAttributedString)
+
+        let touchLocation = gesture.location(in: self)
+        let characterIndex = layoutManager.characterIndex(
+            for: touchLocation,
+            in: textContainer,
+            fractionOfDistanceBetweenInsertionPoints: nil
+        )
+        
+        guard characterIndex >= 0, characterIndex != NSNotFound else { return }
+        
+        let glyphRange = layoutManager.glyphRange(
+            forCharacterRange: NSRange(location: characterIndex, length: 1),
+            actualCharacterRange: nil
+        )
+        
+        let characterRect = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
+        
+        // Добавим учет центрирования
+        var adjustedCharacterRect = characterRect
+        let textBoundingBox = layoutManager.usedRect(for: textContainer)
+        let yOffset = (bounds.height - textBoundingBox.height) * 0.5
+        let xOffset = (bounds.width - textBoundingBox.width) * 0.5
+        adjustedCharacterRect.origin.x += xOffset
+        adjustedCharacterRect.origin.y += yOffset
+        
+        guard adjustedCharacterRect.contains(touchLocation) else { return }
+        
+        let attributes = textStorage.attributes(at: characterIndex, effectiveRange: nil)
+        if let action = attributes[.tapAction] as? () -> Void {
+            action()
+        }
+    }
+
+}
+
+
 /// A component view model struct that represents a text component and conforms to the
 /// Componentable and Textable protocols.
 public struct MText: Componentable, Textable, DeclarativeCommon {
@@ -101,6 +181,7 @@ extension MTextView: ReusableView {
         }
         
         applyDeclarativeCommon(model: data, to: self, cancellables: &cancellables)
+        setupTapHandling()
     }
 
     public func prepareForReuse() {
@@ -138,7 +219,7 @@ extension MTextView {
         public init(
             adjustsFontSizeToFitWidth: Bool = false,
             font: UIFont? = nil,
-            textColor: UIColor? = nil,
+            textColor: UIColor? = UIColor.label,
             textAlignment: NSTextAlignment  = .left,
             numberOfLines: Int  = 1,
             lineBreakMode: NSLineBreakMode = .byTruncatingTail,
