@@ -79,6 +79,7 @@ public struct TapableContainer: Componentable {
 public final class TapableContainerView: TapableView {
     private var appearance: Appearance?
     private var cancellables = Set<AnyCancellable>()
+    private var hitTestSize: CGSize = .zero // Добавляем это свойство
 }
 
 extension TapableContainerView: ReusableView {
@@ -110,10 +111,18 @@ extension TapableContainerView: ReusableView {
 }
 
 extension TapableContainerView {
+    public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let largerFrame = bounds.insetBy(dx: -hitTestSize.width, dy: -hitTestSize.height)
+        return largerFrame.contains(point)
+    }
+}
+
+extension TapableContainerView {
     private func updateAppearance(appearance: Appearance) {
         guard appearance != self.appearance else { return }
 
         self.highlightBehavior = appearance.highlightBehavior
+        self.hitTestSize = appearance.hitTestSize // Обновляем hitTestSize
 
         self.appearance = appearance
     }
@@ -122,9 +131,11 @@ extension TapableContainerView {
 extension TapableContainerView {
     public struct Appearance: Equatable, Withable {
         public var highlightBehavior: TapableView.HighlightBehavior
+        public var hitTestSize: CGSize = .zero
 
-        public init(highlightBehavior: TapableView.HighlightBehavior = .alpha) {
+        public init(highlightBehavior: TapableView.HighlightBehavior = .alpha, hitTestSize: CGSize = .zero) {
             self.highlightBehavior = highlightBehavior
+            self.hitTestSize = hitTestSize
         }
     }
 }
@@ -147,4 +158,26 @@ extension TapableContainer: Stylable {
         self.action = action
         return self
     }
+
+    @discardableResult
+    public func hitTestSize(_ size: CGSize) -> Self {
+        self.appearance.hitTestSize = size
+        return self
+    }
 }
+
+#if DEBUG
+import SwiftUI
+struct Main_Previews: PreviewProvider {
+    static var previews: some View {
+        ForEach(previewDevices, id: \.self) {
+            ComponentPreview(distribution: .center) {
+                MText("Text")
+                    .backgroundColor(.red)
+            }
+            .previewDevice($0)
+            .background(Color(red: 0.15, green: 0.15, blue: 0.15))
+        }
+    }
+}
+#endif

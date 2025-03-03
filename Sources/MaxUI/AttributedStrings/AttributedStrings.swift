@@ -1,4 +1,3 @@
-// swiftlint:disable file_length
 import UIKit
 
 extension String {
@@ -130,7 +129,14 @@ extension String {
     public func verticalGlyphForm(_ verticalGlyphForm: Int) -> NSAttributedString {
         NSAttributedString(string: self, attributes: [.verticalGlyphForm: verticalGlyphForm])
     }
-
+    
+    @discardableResult
+    public func onTap(_ action: @escaping () -> Void) -> NSAttributedString {
+        let mutable = NSMutableAttributedString(string: self)
+        mutable.addAttribute(.tapAction, value: action, range: NSRange(location: 0, length: mutable.length))
+        return mutable
+    }
+    
     @discardableResult
     public func lineSpacing(_ lineSpacing: CGFloat) -> NSAttributedString {
         let paragraph = NSMutableParagraphStyle()
@@ -273,7 +279,8 @@ extension String {
 }
 
 extension NSAttributedString {
-    @discardableResult public func font(_ font: UIFont) -> NSAttributedString {
+    @discardableResult
+    public func font(_ font: UIFont) -> NSAttributedString {
         set([.font: font])
     }
 
@@ -292,15 +299,18 @@ extension NSAttributedString {
         set([.backgroundColor: backgroundColor])
     }
 
-    @discardableResult public func ligature(_ ligature: Int) -> NSAttributedString {
+    @discardableResult
+    public func ligature(_ ligature: Int) -> NSAttributedString {
         set([.ligature: ligature])
     }
 
-    @discardableResult public func kern(_ kern: CGFloat) -> NSAttributedString {
+    @discardableResult
+    public func kern(_ kern: CGFloat) -> NSAttributedString {
         set([.kern: kern])
     }
 
-    @discardableResult public func tracking(_ tracking: CGFloat) -> NSAttributedString {
+    @discardableResult
+    public func tracking(_ tracking: CGFloat) -> NSAttributedString {
         set([.tracking: tracking])
     }
 
@@ -338,7 +348,8 @@ extension NSAttributedString {
         set([.attachment: attachment])
     }
 
-    @discardableResult public func link(_ link: URL) -> NSAttributedString {
+    @discardableResult
+    public func link(_ link: URL) -> NSAttributedString {
         set([.link: link])
     }
 
@@ -375,6 +386,11 @@ extension NSAttributedString {
     @discardableResult
     public func verticalGlyphForm(_ verticalGlyphForm: Int) -> NSAttributedString {
         set([.verticalGlyphForm: verticalGlyphForm])
+    }
+    
+    @discardableResult
+    public func onTap(_ action: @escaping () -> Void) -> NSAttributedString {
+        set([.tapAction: action])
     }
 
     @discardableResult
@@ -561,4 +577,6 @@ extension NSAttributedString {
     }
 }
 
-// swiftlint:enable file_length
+extension NSAttributedString.Key {
+    static let tapAction = NSAttributedString.Key("tapAction")
+}

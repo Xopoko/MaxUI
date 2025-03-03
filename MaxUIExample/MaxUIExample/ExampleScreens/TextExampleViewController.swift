@@ -70,7 +70,7 @@ class TextExampleViewController: UIViewController {
                     "\n"
                     "> "
                         .font(.systemFont(ofSize: 20, weight: .bold))
-                    "How to find an iOS developer in the crowd?"
+                    "How to find an iOS developer in a crowd?"
                     "\n"
                     "\n"
                     "> "
@@ -82,7 +82,7 @@ class TextExampleViewController: UIViewController {
                         .alignment(.center)
                     "\n"
                     "\n"
-                    "(I know it's cringe but I'm dead inside and I don't care)"
+                    "(I know it's cringe but I'm dead inside so I don't care)"
                         .font(.systemFont(ofSize: 12))
                         .foregroundColor(.lightGray)
                         .alignment(.center)
